@@ -264,5 +264,146 @@ body{
     max-width:700px;
 
     margin:auto;
+    margin-bottom:70px;
+
+}
+/* ---------- Timeline Section ---------- */
+
+.timeline-section{
+    padding:100px 0;
+     background:linear-gradient(
+        to bottom,
+        #ffffff,
+        #f8fbff
+    );
+}
+
+.timeline-card{
+    position:relative;
+    background:#ffffff;
+    border-radius:18px;
+    padding:70px 30px 35px;
+    text-align:center;
+    box-shadow:0 15px 40px rgba(15,23,42,.06);
+    border:1px solid #eef2f7;
+    transition:.35s;
+    height:100%;
+}
+
+.timeline-card:hover{
+
+    transform:translateY(-12px) scale(1.02);
+
+    box-shadow:0 28px 60px rgba(37,99,235,.15);
+
+    border-color:#2563eb;
+
+}
+.timeline-number{
+
+    width:70px;
+    height:70px;
+
+    background:#2563eb;
+    color:#fff;
+
+    border-radius:50%;
+
+    font-size:28px;
+    font-weight:700;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    position:absolute;
+
+    top:-35px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    box-shadow:0 12px 30px rgba(37,99,235,.25);
+
+    transition:all .35s ease;
+
+}
+
+.timeline-card h4{
+    font-size:28px;
+    font-weight:700;
+    margin-bottom:18px;
+}
+
+.timeline-card p{
+    color:var(--text-light);
+    line-height:1.8;
+    font-size:18px;
+}
+
+.timeline-wrapper{
+
+    position:relative;
+
+}
+
+.timeline-line{
+
+    position:absolute;
+
+    top: 42px;
+    left:12%;
+
+    width:76%;
+    height:3px;
+
+    background:linear-gradient(
+90deg,
+#bfdbfe,
+#2563eb,
+#bfdbfe
+);
+    z-index:0;
+
+}
+
+.timeline-card{
+
+    position:relative;
+    z-index:2;
+
+}
+
+.timeline-card:hover .timeline-number{
+
+    transform: translateX(-50%) scale(1.1);
+    background: var(--primary-hover);
+}
+
+.timeline-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+    top:0;
+
+    width:100%;
+    height:4px;
+
+    background:#dbeafe;
+
+    border-radius:18px 18px 0 0;
+
+    transform:scaleX(0);
+
+    transition:.35s;
+
+}
+
+.timeline-card:hover::before{
+
+    transform:scaleX(1);
 
 }
