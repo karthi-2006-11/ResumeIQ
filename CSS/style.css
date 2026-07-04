@@ -407,3 +407,233 @@ body{
     transform:scaleX(1);
 
 }
+
+/* =====================================
+   CALL TO ACTION
+===================================== */
+
+.cta-section{
+
+    background:#ffffff;
+
+    padding:120px 0;
+
+}
+
+.cta-box{
+
+    background:linear-gradient(
+        135deg,
+        #2563eb,
+        #1d4ed8
+    );
+
+    padding:90px 70px;
+
+    border-radius:30px;
+
+    box-shadow:
+0 30px 80px rgba(37,99,235,.30),
+0 10px 30px rgba(37,99,235,.15);
+
+    transition:.4s;
+}
+
+.cta-box:hover{
+    transform:translateY(-5px);
+}
+
+.cta-box h2{
+
+    font-size:48px;
+
+    font-weight:800;
+
+    margin-bottom:25px;
+
+    color:#fff;
+
+}
+
+.cta-box p{
+
+    font-size:20px;
+
+    line-height:1.8;
+
+    opacity:.95;
+
+    margin-bottom:40px;
+    
+    color:rgba(255,255,255,.85);
+
+    max-width:700px;
+}
+
+.cta-buttons{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:20px;
+
+    flex-wrap:wrap;
+
+}
+
+.cta-box .btn-primary{
+
+    background:white;
+
+    color:var(--primary);
+
+}
+
+.cta-box .btn-primary:hover{
+
+    background:#f8fafc;
+
+}
+
+.cta-box .btn-outline-dark{
+
+    border:2px solid white;
+
+    color:white;
+
+}
+
+.cta-box .btn-outline-dark:hover{
+
+    background:white;
+
+    color:var(--primary);
+
+}
+
+/* ---------- Footer ---------- */
+
+.footer{
+
+    background:#111827;
+    color:#fff;
+
+    padding:80px 0 30px;
+
+}
+
+.footer-logo{
+
+    font-size:34px;
+    font-weight:800;
+
+}
+
+.footer-logo span{
+
+    color:var(--primary);
+
+}
+
+.footer-text{
+
+    color:#cbd5e1;
+
+    line-height:1.8;
+
+    margin-top:20px;
+
+}
+
+.footer h5{
+
+    margin-bottom:20px;
+    font-weight:700;
+
+}
+
+.footer-links{
+
+    list-style:none;
+    padding:0;
+
+}
+
+.footer-links li{
+
+    margin-bottom:12px;
+
+}
+
+.footer-links a{
+
+    text-decoration:none;
+    color:#cbd5e1;
+
+    transition:.3s;
+
+}
+
+.footer-links a:hover{
+
+    color:#fff;
+    padding-left:5px;
+
+}
+
+.social-icons{
+
+    display:flex;
+    gap:18px;
+
+}
+
+.social-icons a{
+
+    width:48px;
+    height:48px;
+
+    border-radius:50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:rgba(255,255,255,.08);
+
+    color:#fff;
+
+    text-decoration:none;
+
+    font-size:22px;
+
+    transition:.3s;
+
+}
+
+.social-icons a:hover{
+
+    background:var(--primary);
+
+    transform:translateY(-5px);
+
+}
+
+.footer hr{
+
+    margin:50px 0 25px;
+
+    border-color:rgba(255,255,255,.15);
+
+}
+
+.copyright{
+
+    text-align:center;
+
+    color:#94a3b8;
+
+    margin:0;
+
+}
