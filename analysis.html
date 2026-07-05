@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Analysis | ResumeIQ</title>
+
+    <link rel="stylesheet" href="css/analysis.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <div class="analysis-card">
+
+            <h1>Resume Analysis Report</h1>
+
+            <p class="subtitle">
+                Here's a quick overview of your resume performance.
+            </p>
+
+            <!-- ATS Score -->
+            <div class="score-section">
+
+                <h2>ATS Score</h2>
+
+                <div class="score-circle">
+                    <span>85%</span>
+                </div>
+
+            </div>
+            <div class="metrics">
+
+    <div class="metric">
+        <p>Resume Quality</p>
+        <div class="progress">
+            <div class="progress-fill quality"></div>
+        </div>
+    </div>
+
+    <div class="metric">
+        <p>Skills Match</p>
+        <div class="progress">
+            <div class="progress-fill skills"></div>
+        </div>
+    </div>
+
+    <div class="metric">
+        <p>Formatting</p>
+        <div class="progress">
+            <div class="progress-fill formatting"></div>
+        </div>
+    </div>
+
+</div>
+
+<div class="summary">
+    <h3>📋 Resume Summary</h3>
+
+    <p>
+        Your resume has a good structure and includes important technical skills.
+        Adding more projects, measurable achievements, and keywords related to the
+        job description can significantly improve your ATS score.
+    </p>
+</div>
+
+            <!-- Analysis Grid -->
+            <div class="analysis-grid">
+
+                <!-- Skills Found -->
+                <div class="card">
+                    <h3>✅ Skills Found</h3>
+
+                    <ul>
+                        <li>HTML</li>
+                        <li>CSS</li>
+                        <li>JavaScript</li>
+                        <li>Bootstrap</li>
+                    </ul>
+
+                </div>
+
+                <!-- Missing Skills -->
+                <div class="card">
+                    <h3>❌ Missing Skills</h3>
+
+                    <ul>
+                        <li>React</li>
+                        <li>Git</li>
+                        <li>Node.js</li>
+                        <li>REST API</li>
+                    </ul>
+
+                </div>
+
+            </div>
+
+            <!-- Suggestions -->
+            <div class="suggestions">
+
+                <h3>💡 Suggestions</h3>
+
+                <ul>
+                    <li>Add more measurable achievements.</li>
+                    <li>Include your GitHub profile.</li>
+                    <li>Add more technical projects.</li>
+                    <li>Use stronger action verbs.</li>
+                </ul>
+
+            </div>
+
+            <button id="uploadAgainBtn">
+                Upload Another Resume
+            </button>
+
+        </div>
+
+    </div>
+
+    <script src="js/analysis.js"></script>
+
+</body>
+</html>

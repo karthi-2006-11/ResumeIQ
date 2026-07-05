@@ -66,5 +66,5 @@ function displayFile(file) {
 }
 
 analyzeBtn.addEventListener("click", () => {
-    alert("Resume uploaded successfully!\n\nResume analysis feature will be added in Day 6.");
+    window.location.href = "analysis.html";
 });

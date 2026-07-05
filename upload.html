@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Upload | ResumeIQ</title>
+
+    <link rel="stylesheet" href="css/upload.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <div class="upload-card">
+
+            <h1>Upload Your Resume</h1>
+
+            <p class="subtitle">
+                Upload your resume in PDF format to get an AI-powered analysis.
+            </p>
+
+            <div class="upload-area" id="uploadArea">
+
+                <div class="upload-icon">
+                    📄
+                </div>
+
+                <h2>Drag & Drop Resume</h2>
+
+                <p>or</p>
+
+                <input
+                    type="file"
+                    id="resumeInput"
+                    accept=".pdf"
+                    hidden
+                >
+
+                <button id="browseBtn">
+                    Browse Files
+                </button>
+
+                <p class="note">
+                    Only PDF files are allowed.
+                </p>
+
+            </div>
+
+            <div id="fileInfo"></div>
+
+            <button id="analyzeBtn" disabled>
+                Analyze Resume
+            </button>
+
+        </div>
+
+    </div>
+
+    <script src="js/upload.js"></script>
+
+</body>
+</html>
