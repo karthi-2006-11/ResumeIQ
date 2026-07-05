@@ -11,6 +11,7 @@ body {
     background: linear-gradient(135deg, #2563eb, #1e40af);
     min-height: 100vh;
     padding: 40px 20px;
+    font-family: 'Inter', sans-serif;
 }
 
 /* Container */

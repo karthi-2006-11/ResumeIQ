@@ -66,5 +66,5 @@ function displayFile(file) {
 }
 
 analyzeBtn.addEventListener("click", () => {
-    window.location.href = "analysis.html";
+    window.location.href = "loading.html";
 });

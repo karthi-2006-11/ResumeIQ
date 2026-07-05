@@ -32,6 +32,7 @@ body{
     font-family:'Poppins',sans-serif;
     background:var(--background);
     color:var(--text);
+    font-family: 'Inter', sans-serif;
 }
 
 /* ---------- Navbar ---------- */

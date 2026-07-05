@@ -1,0 +1,63 @@
+/* ===========================
+   ResumeIQ Global Styles
+=========================== */
+
+/* Google Font */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Theme Variables */
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --secondary: #4f46e5;
+    --accent: #06b6d4;
+
+    --background: #f8fafc;
+    --surface: rgba(255, 255, 255, 0.75);
+
+    --text: #0f172a;
+    --text-light: #64748b;
+
+    --border: rgba(148, 163, 184, 0.2);
+
+    --shadow-sm: 0 8px 24px rgba(15, 23, 42, 0.08);
+    --shadow-lg: 0 20px 60px rgba(15, 23, 42, 0.12);
+
+    --radius: 18px;
+    --transition: 0.3s ease;
+}
+
+/* Base Styles */
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: "Inter", sans-serif;
+    background: var(--background);
+    color: var(--text);
+    line-height: 1.6;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+}
+
+ul {
+    list-style: none;
+}
