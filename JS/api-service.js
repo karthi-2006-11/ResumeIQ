@@ -6,10 +6,28 @@
  */
 
 const ResumeIQApiService = (() => {
+    /**
+     * Environment-Aware Dynamic API Base URL Resolution
+     * 1. Window Global Override (window.RESUMEIQ_API_URL)
+     * 2. Co-hosted Same Origin (if frontend served directly by API server on port 5000)
+     * 3. Fallback Development Origin (http://localhost:5000)
+     */
+    function getBaseUrl() {
+        if (typeof window !== 'undefined' && window.RESUMEIQ_API_URL) {
+            return String(window.RESUMEIQ_API_URL).replace(/\/+$/, '');
+        }
+        if (typeof window !== 'undefined' && window.location && window.location.protocol.startsWith('http')) {
+            if (window.location.port === '5000') {
+                return window.location.origin;
+            }
+        }
+        return 'http://localhost:5000';
+    }
+
     const CONFIG = {
-        baseUrl: 'http://localhost:5000',
+        get baseUrl() { return getBaseUrl(); },
         apiVersion: 'v1',
-        timeoutMs: 2000,
+        timeoutMs: 2500,
         tokenStorageKey: 'resumeIQ_token'
     };
 
