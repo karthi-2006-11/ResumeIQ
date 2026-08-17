@@ -58,6 +58,12 @@ Built with **pure HTML5, CSS3, and Vanilla JavaScript** on the frontend and a **
    (No Account Required)                   (Isolated Data Records)
 ```
 
+### 🚀 Production Deployment Architecture
+* **Frontend**: GitHub Pages static hosting (`https://karthi-2006-11.github.io/ResumeIQ/`)
+* **Backend**: Separate Node.js / Express host (Render, Railway, AWS, DigitalOcean)
+* **Database**: MongoDB Atlas / compatible MongoDB instance
+* **AI Provider**: Optional server-side LLM provider (Gemini / OpenAI)
+
 ---
 
 ## 💻 Running the Application

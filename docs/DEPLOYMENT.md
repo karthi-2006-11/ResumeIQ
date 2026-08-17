@@ -43,13 +43,24 @@ Create a `.env` file on your production server or configure environment variable
 
 ---
 
-## 🌐 3. Frontend Deployment & API Origin Configuration
+## 🌐 3. Frontend Deployment & GitHub Pages Hosting
 
 The static frontend files (`index.html`, `upload.html`, `analysis.html`, `dashboard.html`, `history.html`, `login.html`, `register.html`) require **zero build bundlers**.
 
+### GitHub Pages Automated Workflow
+The repository includes `.github/workflows/deploy-pages.yml` which deploys the static frontend to GitHub Pages whenever code is pushed to the `main` branch or triggered via `workflow_dispatch`.
+
+* **Target Production URL**: `https://karthi-2006-11.github.io/ResumeIQ/`
+* **Artifact Scope**: Static HTML, CSS, JavaScript, and images ONLY (`_site` staging directory).
+* **Excluded Artifacts**: Backend code (`server/`), node dependencies (`node_modules/`), Docker files, `.env` files, and test files are **100% excluded** from the GitHub Pages static bundle.
+
+> **Note on Decoupled Backend Architecture:**
+> GitHub Pages is a static file host and **cannot execute the Node.js / Express backend server**.
+> Until your separate Express API server is deployed (e.g. on Render, Railway, or AWS) and `window.RESUMEIQ_API_URL` is configured, client-side browser analysis and demo mode operate locally in offline fallback mode.
+
 ### Setting the Production API URL
 
-By default, the frontend resolves API calls to `http://localhost:5000`. To point static frontend pages to your production backend API, define `window.RESUMEIQ_API_URL` in a global script tag or before loading `js/api-service.js`:
+By default, the frontend resolves API calls to `http://localhost:5000`. To point static frontend pages to your production backend API, define `window.RESUMEIQ_API_URL` in a script tag or before loading `js/api-service.js`:
 
 ```html
 <script>
