@@ -5,7 +5,9 @@ const { executeProviderCall } = require('./ai.provider');
 const ALLOWED_TASKS = new Set([
     'resume-feedback',
     'job-match-explanation',
-    'improvement-plan'
+    'improvement-plan',
+    'resume-rewrite',
+    'bullet-improvement'
 ]);
 
 /**

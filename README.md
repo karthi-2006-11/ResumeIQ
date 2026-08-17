@@ -2,20 +2,25 @@
 
 ResumeIQ is a modern, lightweight, privacy-focused web application designed to help job seekers optimize their resumes for Applicant Tracking Systems (ATS) and hiring managers.
 
-Built with **pure HTML5, CSS3, and Vanilla JavaScript** on the frontend and a **modular Node.js + Express + MongoDB backend**, ResumeIQ provides **Version 2.0 Advanced Resume Intelligence**, **Deterministic Section & Contact Parsing**, **Skill Alias Normalization**, **Bullet Quality & Quantification Detection**, **JWT Authentication & User Account Ownership**, **Authenticated Dashboard & History**, and **Offline Browser Fallback**.
+Built with **pure HTML5, CSS3, and Vanilla JavaScript** on the frontend and a **modular Node.js + Express + MongoDB backend**, ResumeIQ provides **Version 2.0 Advanced Resume Intelligence**, **Phase 18 Resume Improvement Assistant**, **Verified Strengths Detection**, **Actionable Priority Plans**, **Safe Non-Fabricating Rewrite Suggestions**, **JWT Authentication & User Account Ownership**, **Authenticated Dashboard & History**, and **Offline Browser Fallback**.
 
 ---
 
 ## 🌟 Currently Available Features
 
+### 💡 Resume Improvement Assistant (Phase 18)
+* **Verified Strengths Detection**: Highlights candidate resume strengths backed by actual Resume Intelligence v2 signals (complete contact info, strong technical skill coverage, clean section structure, quantified metrics).
+* **Prioritized Action Plan**: Generates a clear, ordered list of recommendations ranked by priority (`high`, `medium`, `low`).
+* **Safe Non-Fabricating Rewrite Suggestions**: Offers rewrites for passive language (`responsible for` → `Managed`, `worked on` → `Contributed to`) without changing facts or scope.
+* **Strict Non-Fabrication Rule**: The system **NEVER** invents metrics (`40%`), team sizes (`led 5 engineers`), revenue, company names, job titles, technologies, or certifications not present in source context.
+* **User Control (Copy & Dismiss)**: Every rewrite suggestion includes **[Copy Suggestion]** with accessible toast feedback and **[Dismiss]** button for in-session removal. User remains in 100% control of all content changes.
+* **Deterministic Score Preservation**: Improvement guidance and rewrite suggestions **DO NOT alter ATS or Job Match scores**.
+
 ### 🧠 Version 2.0 Advanced Resume Intelligence
-* **Normalized Section & Boundary Parsing**: Automatically identifies section boundaries and maps heading variations (`Professional Summary` -> `summary`, `Technical Expertise` -> `skills`, `Employment History` -> `experience`, `Academic Background` -> `education`).
+* **Normalized Section & Boundary Parsing**: Automatically identifies section boundaries and maps heading variations (`Professional Summary` → `summary`, `Technical Expertise` → `skills`, `Employment History` → `experience`, `Academic Background` → `education`).
 * **Contact Info Extractor**: Parses Email, Phone (Indian & International), LinkedIn URL, GitHub URL, and Candidate Name with strict false-positive prevention.
-* **Skill Alias Normalization & False-Positive Protection**: Maps aliases (`JS` -> `JavaScript`, `NodeJS` -> `Node.js`, `Postgres` -> `PostgreSQL`, `ReactJS` -> `React`) while enforcing word boundaries so single-letter skills like `C` do not match `CSS` or `Cloud`.
+* **Skill Alias Normalization & False-Positive Protection**: Maps aliases (`JS` → `JavaScript`, `NodeJS` → `Node.js`, `Postgres` → `PostgreSQL`, `ReactJS` → `React`) while enforcing word boundaries so single-letter skills like `C` do not match `CSS` or `Cloud`.
 * **Bullet Quality & Quantification Analysis**: Analyzes action verbs (`Built`, `Architected`, `Engineered`), quantification metrics (`40%`, `$100K`, `500+`), passive language (`responsible for`), and duplicate bullet warnings.
-* **Scanned PDF Warning**: Identifies low-text image PDFs (`<50` characters) and alerts the user to upload a text-selectable PDF.
-* **Version 2.0 Deterministic Scoring**: 100% formula-driven scoring model for ATS Score, Skills Match %, Quality Score, and Formatting Score. **AI does NOT calculate or override numerical scores.**
-* **Alias-Aware Job Description Matching**: Job matching engine checks skill aliases so `JD: Node.js` correctly matches `Resume: NodeJS`.
 
 ### 🔐 Authenticated Experience
 * **Login & Registration (`login.html`, `register.html`)**: Responsive SaaS login and registration with password policy enforcement (min. 8 chars) and redirect parameters.
@@ -41,7 +46,7 @@ Built with **pure HTML5, CSS3, and Vanilla JavaScript** on the frontend and a **
    (Local Browser Analysis)              (JWT Bearer Token Access)
              │                                     │
              ▼                                     ▼
-      Standard Dashboard               Authenticated Dashboard & History
+    Improvement Assistant               Improvement Assistant & History
    (No Account Required)                   (Isolated Data Records)
 ```
 
@@ -56,7 +61,7 @@ cd server
 # Install Node dependencies
 npm install
 
-# Run backend unit & integration test suite (52 tests)
+# Run backend unit & integration test suite (59 tests)
 npm test
 
 # Start server in development mode
@@ -68,12 +73,13 @@ npm run dev
 ## 🔒 Security, Privacy & Password Safety Rules
 
 1. **Deterministic Score Authority**: Numerical scores are calculated 100% deterministically by the ResumeIQ Engine v2.0. AI is purely qualitative and advisory.
-2. **Privacy Architecture**: Resumes and JDs are processed strictly in RAM (`multer.memoryStorage()`) during analysis and discarded immediately afterwards. **Raw PDF files, raw resume text, and raw job descriptions are NEVER stored in MongoDB.**
-3. **Zero Secrets in Code**: `JWT_SECRET`, `AI_API_KEY`, and `MONGODB_URI` exist **ONLY** in server-side `.env` files.
-4. **Anonymous Mode Preserved**: Offline browser analysis continues working 100% without requiring login.
+2. **Non-Fabrication Guarantee**: Wording suggestions use ONLY facts present in user context. No fake numbers or qualifications are created.
+3. **Privacy Architecture**: Resumes and JDs are processed strictly in RAM (`multer.memoryStorage()`) during analysis and discarded immediately afterwards. **Raw PDF files, raw resume text, and raw job descriptions are NEVER stored in MongoDB.**
+4. **Zero Secrets in Code**: `JWT_SECRET`, `AI_API_KEY`, and `MONGODB_URI` exist **ONLY** in server-side `.env` files.
+5. **Anonymous Mode Preserved**: Offline browser analysis continues working 100% without requiring login.
 
 ---
 
 ## 📝 Disclaimer
 
-ResumeIQ provides heuristic resume analysis, job matching, and qualitative AI feedback for guidance. It does not guarantee specific ATS or hiring outcomes. OCR is not supported; text-selectable PDFs are required.
+ResumeIQ provides suggestions and guidance for user review. It does not automatically modify a resume or guarantee specific ATS or hiring outcomes. AI suggestions require user verification. OCR is not supported; text-selectable PDFs are required.

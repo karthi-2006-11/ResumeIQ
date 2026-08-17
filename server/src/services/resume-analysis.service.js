@@ -5,6 +5,8 @@ const {
     SKILL_DICTIONARY
 } = require('./resume-intelligence.service');
 
+const { generateImprovementPlan } = require('./resume-improvement.service');
+
 // Target Role Skill Requirements Map
 const ROLE_REQUIRED_SKILLS = {
     'Software Engineer': ['JavaScript', 'Python', 'Java', 'Git', 'SQL', 'REST APIs', 'Docker', 'CI/CD'],
@@ -15,7 +17,7 @@ const ROLE_REQUIRED_SKILLS = {
 };
 
 /**
- * Master Server-Side Resume Analysis Function (Version 2.0 Engine)
+ * Master Server-Side Resume Analysis Function (Version 2.0 Engine + Phase 18 Improvements)
  */
 function analyzeResume(rawText, pageCount = 1, fileName = 'Resume.pdf', fileSize = '240 KB', targetRole = 'Software Engineer') {
     // 1. Run Structured Resume Extraction
@@ -29,7 +31,10 @@ function analyzeResume(rawText, pageCount = 1, fileName = 'Resume.pdf', fileSize
     const requiredForRole = ROLE_REQUIRED_SKILLS[targetRole] || ROLE_REQUIRED_SKILLS['Software Engineer'];
     const skillsMissing = requiredForRole.filter(reqSkill => !structured.skillsFound.includes(reqSkill));
 
-    // 4. Format Executive Summary
+    // 4. Generate Phase 18 Improvement Plan (Strengths, Priority Issues, Action Plan, Safe Rewrites)
+    const improvements = generateImprovementPlan(structured, targetRole, null);
+
+    // 5. Format Executive Summary
     let summary = `Your resume has been processed with ResumeIQ Engine v2.0. `;
     if (structured.scannedPdfLikely) {
         summary += `WARNING: Scanned image content detected. Text readability is low.`;
@@ -41,7 +46,7 @@ function analyzeResume(rawText, pageCount = 1, fileName = 'Resume.pdf', fileSize
         summary += `Needs improvement. Missing core skills and structural sections for a competitive ${targetRole} application.`;
     }
 
-    // 5. Build Backward-Compatible & Version 2.0 Extended Result Payload
+    // 6. Build Backward-Compatible & Version 2.0 Extended Result Payload
     return {
         version: '2.0',
         mode: 'backend',
@@ -58,6 +63,7 @@ function analyzeResume(rawText, pageCount = 1, fileName = 'Resume.pdf', fileSize
         skillCategories: structured.skillCategories,
         skillsMissing,
         experienceStats: structured.experienceStats,
+        improvements,
         suggestions: recommendations,
         summary,
         metadata: structured.metadata

@@ -160,6 +160,12 @@ document.addEventListener('DOMContentLoaded', () => {
         renderJobMatchSection(activeAnalysis.jobMatch);
     }
 
+    // Render Phase 18 Resume Improvement Assistant
+    const improvementData = activeAnalysis.improvements || (window.ResumeIQImprovement ? window.ResumeIQImprovement.generateImprovementPlan(activeAnalysis, activeAnalysis.targetRole, activeAnalysis.jobMatch) : null);
+    if (improvementData) {
+        renderImprovementSection(improvementData);
+    }
+
     // AI Insights Opt-In Trigger Handler
     if (generateAiBtn) {
         generateAiBtn.addEventListener('click', async () => {
@@ -340,6 +346,128 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </div>
         `;
+    }
+
+    function renderImprovementSection(data) {
+        const container = document.getElementById('improvementSectionContainer');
+        if (!container || !data) return;
+
+        container.style.display = 'block';
+
+        const strengthsHtml = (data.strengths || []).length > 0 ? `
+            <div style="margin-bottom: 1.5rem;">
+                <h4 style="font-size: 0.95rem; color: var(--success); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="bi bi-shield-check"></i> Verified Strengths
+                </h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.75rem;">
+                    ${(data.strengths || []).map(s => `
+                        <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); padding: 0.75rem 1rem; border-radius: var(--radius-md);">
+                            <div style="font-weight: 700; color: #047857; font-size: 0.875rem;"><i class="bi bi-check-circle-fill"></i> ${escapeHTML(s.title)}</div>
+                            <div style="font-size: 0.8rem; color: var(--slate-600); margin-top: 0.25rem;">${escapeHTML(s.description)}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        ` : '';
+
+        const actionPlanHtml = (data.actionPlan || []).length > 0 ? `
+            <div style="margin-bottom: 1.5rem; background: #f8fafc; border: 1px solid var(--slate-200); padding: 1rem 1.25rem; border-radius: var(--radius-md);">
+                <h4 style="font-size: 0.95rem; color: var(--slate-800); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="bi bi-list-check"></i> Prioritized Action Plan
+                </h4>
+                <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.875rem; color: var(--slate-700); line-height: 1.6;">
+                    ${(data.actionPlan || []).map(item => `<li>${escapeHTML(item)}</li>`).join('')}
+                </ul>
+            </div>
+        ` : '';
+
+        const rewritesHtml = (data.rewriteSuggestions || []).length > 0 ? `
+            <div>
+                <h4 style="font-size: 0.95rem; color: var(--primary); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="bi bi-pencil-square"></i> Safe Non-Fabricating Rewrite Suggestions
+                </h4>
+                <div style="display: flex; flex-direction: column; gap: 0.875rem;">
+                    ${(data.rewriteSuggestions || []).map(r => `
+                        <div class="rewrite-card" id="${escapeHTML(r.id)}" style="background: white; border: 1px solid var(--slate-200); border-radius: var(--radius-md); padding: 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <span class="badge" style="background: rgba(59, 130, 246, 0.1); color: var(--primary); font-size: 0.75rem; text-transform: uppercase;">Section: ${escapeHTML(r.section)}</span>
+                                <span class="badge" style="background: #f1f5f9; color: var(--slate-600); font-size: 0.75rem;">Confidence: ${escapeHTML(r.confidence || 'high')}</span>
+                            </div>
+                            <div style="font-size: 0.8rem; color: var(--slate-500); margin-bottom: 0.25rem;"><strong>Original:</strong></div>
+                            <div style="font-size: 0.85rem; color: var(--slate-700); background: #f8fafc; padding: 0.5rem; border-radius: 4px; margin-bottom: 0.5rem; border-left: 3px solid var(--slate-400);">${escapeHTML(r.original)}</div>
+                            <div style="font-size: 0.8rem; color: var(--success); margin-bottom: 0.25rem;"><strong>Suggested Rewrite:</strong></div>
+                            <div style="font-size: 0.875rem; font-weight: 600; color: var(--slate-900); background: rgba(16, 185, 129, 0.05); padding: 0.5rem; border-radius: 4px; margin-bottom: 0.75rem; border-left: 3px solid var(--success);">${escapeHTML(r.suggestion)}</div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.785rem; color: var(--slate-500);">
+                                <span><i class="bi bi-info-circle"></i> ${escapeHTML(r.reason)}</span>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <button type="button" class="btn btn-outline btn-sm copy-rewrite-btn" data-text="${escapeHTML(r.suggestion)}" aria-label="Copy suggested rewrite to clipboard">
+                                        <i class="bi bi-clipboard"></i> Copy Suggestion
+                                    </button>
+                                    <button type="button" class="btn btn-outline btn-sm dismiss-rewrite-btn" data-target="${escapeHTML(r.id)}" aria-label="Dismiss this suggestion">
+                                        <i class="bi bi-x-lg"></i> Dismiss
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        ` : '';
+
+        container.innerHTML = `
+            <div class="summary-card" style="background: white; border: 1px solid var(--slate-200); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm);">
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
+                    <div>
+                        <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--slate-900); margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="bi bi-lightbulb-fill" style="color: #f59e0b;"></i> Resume Improvement Assistant (v18.0)
+                        </h3>
+                        <p style="color: var(--slate-600); font-size: 0.875rem; margin: 0.25rem 0 0 0;">Actionable, non-fabricating guidance derived from Resume Intelligence signals.</p>
+                    </div>
+                    <span class="badge" style="background: rgba(245, 158, 11, 0.1); color: #d97706; font-weight: 700; font-size: 0.8rem; padding: 0.4rem 0.75rem;">
+                        Overall Priority: ${(data.overallPriority || 'medium').toUpperCase()}
+                    </span>
+                </div>
+
+                ${strengthsHtml}
+                ${actionPlanHtml}
+                ${rewritesHtml}
+            </div>
+        `;
+
+        // Event listener delegation for Copy Suggestion buttons
+        container.querySelectorAll('.copy-rewrite-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const textToCopy = btn.getAttribute('data-text');
+                if (textToCopy) {
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        const origHtml = btn.innerHTML;
+                        btn.innerHTML = '<i class="bi bi-check2"></i> Copied to clipboard!';
+                        btn.style.color = 'var(--success)';
+                        setTimeout(() => {
+                            btn.innerHTML = origHtml;
+                            btn.style.color = '';
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Clipboard copy failed:', err);
+                    });
+                }
+            });
+        });
+
+        // Event listener delegation for Dismiss buttons
+        container.querySelectorAll('.dismiss-rewrite-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.getAttribute('data-target');
+                if (targetId) {
+                    const card = document.getElementById(targetId);
+                    if (card) {
+                        card.style.transition = 'opacity 0.3s ease';
+                        card.style.opacity = '0';
+                        setTimeout(() => card.remove(), 300);
+                    }
+                }
+            });
+        });
     }
 
     function renderExperienceStatsCard(stats) {
