@@ -3,413 +3,266 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ResumeIQ | AI Resume Analyzer</title>
+    <title>ResumeIQ | AI Resume Analyzer & ATS Score Checker</title>
+    <meta name="description" content="Optimize your resume for applicant tracking systems (ATS), identify missing skills, and get personalized recommendations with ResumeIQ.">
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-
-    <!-- Google Font -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/style.css">
+    <!-- Bootstrap Icons for lightweight SVG/font icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <!-- Custom Pure CSS Design System -->
     <link rel="stylesheet" href="css/global.css">
-    <link rel="stylesheet" href="css/landing.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-<nav class="navbar navbar-expand-lg bg-white shadow-sm">
-    <div class="container">
 
-       <a class="navbar-brand" href="#">
-    Resume<span>IQ</span>
-</a>
-
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarMenu">
-
-            <ul class="navbar-nav ms-auto">
-
-                <li class="nav-item">
-                    <a class="nav-link" href="#home">Home</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="#features">Features</a>
-                </li>
-
-                <li class="nav-item">
-                   <a class="nav-link" href="#timeline">How It Works</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="#contact">Contact</a>
-                </li>
-
-            </ul>
-
-        </div>
-
-    </div>
-</nav>
-      <section id="home" class="hero">
+    <!-- App Header & Navigation Shell -->
+    <header class="app-header">
         <div class="container">
-
-    <div class="row align-items-center">
-
-        <div class="col-lg-6">
-
-            <div class="hero-badge">
-    🤖 AI Resume Analyzer
-</div>
-
-            <h1 class="hero-title">
-                Build a Resume
-                <br>
-                That Gets Noticed
-            </h1>
-
-           <p class="hero-text">
-                Upload your resume and receive an ATS compatibility score,
-                identify missing skills, and get smart suggestions to improve
-                your chances of landing interviews.
-            </p>
-
-            <div class="mt-4">
-
-                <a href="upload.html" class="btn btn-primary btn-lg">
-                    Analyze Resume
-                </a>
-
-                <a href="#" class="btn btn-outline-dark btn-lg ms-2">
-                    Learn More
-                </a>
-
-            </div>
-
-        </div>
-
-        <div class="col-lg-6 text-center">
-
-            <img src="images/hero.png"
-                 alt="Resume Illustration"
-                 class="hero-image">
-
-        </div>
-
-    </div>
-    </div>
-
-</section>
-
-<section id="features" class="features-section">
-    <div class="container py-5">
-
-    <div class="text-center mb-5">
-
-<h2 class="section-title">
-            Why Choose ResumeIQ?
-        </h2>
-
-        <p class="section-text">
-            Everything you need to improve your resume and increase your interview chances.
-        </p>
-
-    </div>
-
-    <div class="row g-4">
-
-       <div class="col-md-6 col-lg-3">
-
-    <div class="feature-card">
-
-        <div class="feature-icon">
-            <i class="bi bi-file-earmark-text"></i>
-        </div>
-
-        <h4>Resume Upload</h4>
-
-        <p>
-            Upload your resume securely in PDF format for AI-powered analysis.
-        </p>
-
-    </div>
-
-</div>
-
-        <div class="col-md-6 col-lg-3">
-
-            <div class="feature-card">
-
-    <div class="feature-icon">
-        <i class="bi bi-cpu"></i>
-    </div>
-
-    <h4>AI Resume Analysis</h4>
-
-    <p>
-        Analyze your resume instantly using AI-powered insights and recommendations.
-    </p>
-
-</div>
-
-        </div>
-
-        <div class="col-md-6 col-lg-3">
-
-           <div class="feature-card">
-
-    <div class="feature-icon">
-        <i class="bi bi-bar-chart-line"></i>
-    </div>
-
-    <h4>ATS Score</h4>
-
-    <p>
-        Measure how well your resume matches Applicant Tracking Systems.
-    </p>
-
-</div>
-
-        </div>
-
-        <div class="col-md-6 col-lg-3">
-
-            <div class="feature-card">
-
-    <div class="feature-icon">
-        <i class="bi bi-lightbulb"></i>
-    </div>
-
-    <h4>Smart Suggestions</h4>
-
-    <p>
-        Receive personalized recommendations to strengthen your resume.
-    </p>
-
-</div>
-
-        </div>
-
-    </div>
-    </div>
-
-</section>
-
-<section id="timeline" class="timeline-section">
-
-    <div class="container">
-
-        <div class="text-center mb-5">
-
-            <h2 class="section-title">How It Works</h2>
-
-<p class="section-text">
-    Analyze your resume in four simple steps and receive AI-powered insights instantly.
-</p>
-        </div>
-
-        <div class="timeline-wrapper">
-
-    <div class="timeline-line"></div>
-
-    <div class="row g-4">
-
-            <div class="col-lg-3 col-md-6">
-
-                <div class="timeline-card">
-
-                    <div class="timeline-number">1</div>
-
-                    <h4>Upload Resume</h4>
-
-                    <p>Upload your resume in PDF format securely.</p>
-
-                </div>
-
-            </div>
-
-            <div class="col-lg-3 col-md-6">
-
-               <div class="timeline-card">
-
-                    <div class="timeline-number">2</div>
-
-                    <h4>AI Analysis</h4>
-
-                    <p>ResumeIQ analyzes your resume using AI.</p>
-
-                </div>
-
-            </div>
-
-            <div class="col-lg-3 col-md-6">
-
-                <div class="timeline-card">
-
-                    <div class="timeline-number">3</div>
-
-                    <h4>ATS Score</h4>
-
-                    <p>Receive an ATS compatibility score instantly.</p>
-
-                </div>
-
-            </div>
-
-            <div class="col-lg-3 col-md-6">
-
-                <div class="timeline-card">
-
-                    <div class="timeline-number">4</div>
-
-                    <h4>Smart Report</h4>
-
-                    <p>Download personalized suggestions to improve your resume.</p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-    </div>
-
-</section>
-<section id="contact" class="cta-section">
-
-    <div class="container">
-
-        <div class="cta-box">
-
-            <h2>Ready to Improve Your Resume?</h2>
-
-            <p>
-                Upload your resume today and receive AI-powered feedback,
-                ATS insights, and personalized suggestions within seconds.
-            </p>
-
-            <div class="cta-buttons">
-
-                <a href="upload.html" class="btn btn-primary">
-                    Analyze Resume
-                </a>
-
-                <a href="#" class="btn btn-outline-dark">
-                    Learn More
-                </a>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-<!-- Footer -->
-<footer class="footer">
-
-    <div class="container">
-
-        <div class="row gy-5">
-
-            <!-- Logo -->
-            <div class="col-lg-4">
-
-                <h3 class="footer-logo">
+            <div class="navbar-inner">
+                <a class="brand-logo" href="index.html">
+                    <span class="logo-icon" aria-hidden="true"><i class="bi bi-file-earmark-text"></i></span>
                     Resume<span>IQ</span>
-                </h3>
+                </a>
 
-                <p class="footer-text">
-                    AI-powered resume analyzer helping job seekers
-                    build stronger resumes and improve their
-                    interview chances.
-                </p>
+                <nav class="nav-menu" id="navMenu" aria-label="Main Navigation">
+                    <a class="nav-link active" href="#home">Home</a>
+                    <a class="nav-link" href="#features">Features</a>
+                    <a class="nav-link" href="#timeline">How It Works</a>
+                    <a class="nav-link" href="#contact">Contact</a>
+                </nav>
 
+                <div class="nav-actions">
+                    <a href="upload.html" class="btn btn-primary">
+                        Analyze Resume <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                    </a>
+                    <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle Navigation Menu" aria-expanded="false">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
             </div>
+        </div>
+    </header>
 
-            <!-- Quick Links -->
+    <!-- Main Content Area -->
+    <main class="main-content">
 
-            <div class="col-lg-2">
+        <!-- Hero Section -->
+        <section id="home" class="hero-section">
+            <div class="container">
+                <div class="hero-grid">
+                    <div class="hero-content">
+                        <div class="badge badge-primary hero-badge">
+                            <i class="bi bi-robot" aria-hidden="true"></i> AI-Powered Resume Analysis
+                        </div>
 
-                <h5>Quick Links</h5>
+                        <h1 class="hero-title">
+                            Build a Resume That <span>Gets Noticed</span>
+                        </h1>
 
-                <ul class="footer-links">
+                        <p class="hero-description">
+                            Upload your resume and receive an instant ATS compatibility score, identify missing technical skills, and get smart actionable recommendations to land more interview callbacks.
+                        </p>
 
-    <li><a href="#home">Home</a></li>
+                        <div class="hero-actions">
+                            <a href="upload.html" class="btn btn-primary btn-lg">
+                                <i class="bi bi-cloud-upload" aria-hidden="true"></i> Analyze Resume
+                            </a>
+                            <a href="#features" class="btn btn-outline btn-lg">
+                                Learn More
+                            </a>
+                        </div>
+                    </div>
 
-    <li><a href="#features">Features</a></li>
+                    <div class="hero-visual">
+                        <div class="hero-image-wrapper">
+                            <img src="images/hero.png" alt="ResumeIQ AI Resume Analysis illustration preview" class="hero-image">
 
-    <li><a href="#timeline">Timeline</a></li>
+                            <div class="floating-pill pill-1">
+                                <i class="bi bi-check-circle-fill" style="color: var(--success);" aria-hidden="true"></i>
+                                <span>ATS Compatibility 92%</span>
+                            </div>
 
-    <li><a href="#contact">Contact</a></li>
-
-                </ul>
-
+                            <div class="floating-pill pill-2">
+                                <i class="bi bi-lightning-charge-fill" style="color: var(--warning);" aria-hidden="true"></i>
+                                <span>Instant AI Report</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </section>
 
-            <!-- Resources -->
-
-            <div class="col-lg-2">
-
-                <h5>Resources</h5>
-
-                <ul class="footer-links">
-
-                    <li><a href="#">Privacy</a></li>
-
-                    <li><a href="#">Terms</a></li>
-
-                    <li><a href="#">FAQ</a></li>
-
-                </ul>
-
-            </div>
-
-            <!-- Connect -->
-
-            <div class="col-lg-4">
-
-                <h5>Connect</h5>
-
-                <div class="social-icons">
-
-                    <a href="#"><i class="bi bi-github"></i></a>
-
-                    <a href="#"><i class="bi bi-linkedin"></i></a>
-
-                    <a href="#"><i class="bi bi-envelope-fill"></i></a>
-
+        <!-- Features Section -->
+        <section id="features" class="features-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Why Choose ResumeIQ?</h2>
+                    <p class="section-subtitle">
+                        Everything job seekers need to optimize their resumes for Applicant Tracking Systems and hiring managers.
+                    </p>
                 </div>
 
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon-box" aria-hidden="true">
+                            <i class="bi bi-file-earmark-pdf"></i>
+                        </div>
+                        <h3>PDF Resume Upload</h3>
+                        <p>Upload your resume securely in standard PDF format for instant text parsing and analysis.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon-box" aria-hidden="true">
+                            <i class="bi bi-cpu"></i>
+                        </div>
+                        <h3>AI Resume Analysis</h3>
+                        <p>Analyze your resume content against industry role benchmarks using intelligent skill recognition.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon-box" aria-hidden="true">
+                            <i class="bi bi-speedometer2"></i>
+                        </div>
+                        <h3>ATS Compatibility Score</h3>
+                        <p>Measure how well your resume survives automated applicant tracking scanners before applying.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon-box" aria-hidden="true">
+                            <i class="bi bi-lightbulb"></i>
+                        </div>
+                        <h3>Smart Suggestions</h3>
+                        <p>Receive tailored actionable recommendations to improve structure, key skills, and impact verbs.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works / Timeline Section -->
+        <section id="timeline" class="timeline-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">How It Works</h2>
+                    <p class="section-subtitle">
+                        Analyze your resume in four simple steps and receive comprehensive AI-powered insights within seconds.
+                    </p>
+                </div>
+
+                <div class="timeline-wrapper">
+                    <div class="timeline-line"></div>
+
+                    <div class="timeline-grid">
+                        <div class="timeline-card">
+                            <div class="timeline-step-badge">1</div>
+                            <h3>Upload Resume</h3>
+                            <p>Select your target job role and drag & drop your PDF resume securely.</p>
+                        </div>
+
+                        <div class="timeline-card">
+                            <div class="timeline-step-badge">2</div>
+                            <h3>AI Analysis</h3>
+                            <p>ResumeIQ parses your document structure, work history, and technical keywords.</p>
+                        </div>
+
+                        <div class="timeline-card">
+                            <div class="timeline-step-badge">3</div>
+                            <h3>ATS Score</h3>
+                            <p>Get an overall ATS compliance score and formatting quality breakdown.</p>
+                        </div>
+
+                        <div class="timeline-card">
+                            <div class="timeline-step-badge">4</div>
+                            <h3>Smart Report</h3>
+                            <p>Review missing keywords and clear recommendations to optimize your resume.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Banner Section -->
+        <section id="contact" class="cta-section">
+            <div class="container">
+                <div class="cta-banner">
+                    <h2>Ready to Improve Your Resume?</h2>
+                    <p>
+                        Join thousands of job seekers optimizing their resumes with instant AI feedback and targeted keyword analysis.
+                    </p>
+                    <div class="cta-actions">
+                        <a href="upload.html" class="btn btn-primary btn-lg">
+                            <i class="bi bi-rocket-takeoff" aria-hidden="true"></i> Analyze Resume Now
+                        </a>
+                        <a href="#features" class="btn btn-outline btn-lg" style="background: transparent; color: white; border-color: rgba(255,255,255,0.4);">
+                            Explore Features
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Universal Footer Shell -->
+    <footer class="app-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a class="brand-logo" href="index.html">
+                        <span class="logo-icon" aria-hidden="true"><i class="bi bi-file-earmark-text"></i></span>
+                        Resume<span>IQ</span>
+                    </a>
+                    <p class="footer-desc">
+                        AI-powered resume analyzer helping job seekers build stronger resumes and land more interview opportunities.
+                    </p>
+                </div>
+
+                <div>
+                    <h3 class="footer-col-title">Quick Links</h3>
+                    <ul class="footer-links-list">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#timeline">How It Works</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="footer-col-title">Resources</h3>
+                    <ul class="footer-links-list">
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">ATS Guidelines</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="footer-col-title">Connect</h3>
+                    <div class="social-links">
+                        <a href="#" class="social-icon-btn" aria-label="GitHub Profile"><i class="bi bi-github" aria-hidden="true"></i></a>
+                        <a href="#" class="social-icon-btn" aria-label="LinkedIn Profile"><i class="bi bi-linkedin" aria-hidden="true"></i></a>
+                        <a href="#" class="social-icon-btn" aria-label="Email Contact"><i class="bi bi-envelope-fill" aria-hidden="true"></i></a>
+                    </div>
+                </div>
             </div>
 
+            <div class="footer-bottom">
+                <p>© 2026 ResumeIQ. Built with pure HTML, CSS & JS.</p>
+                <p>Designed for optimal job search results.</p>
+            </div>
         </div>
+    </footer>
 
-        <hr>
-
-        <p class="copyright">
-
-            © 2026 ResumeIQ • Built with ❤️ by Karthikeyan
-
-        </p>
-
-    </div>
-
-</footer>
-
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-
+    <!-- App Logic -->
+    <script src="js/api-service.js"></script>
+    <script src="js/auth-service.js"></script>
     <script src="js/script.js"></script>
-
 </body>
 </html>

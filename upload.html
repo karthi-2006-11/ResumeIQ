@@ -3,65 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resume Upload | ResumeIQ</title>
+    <title>Upload Resume | ResumeIQ</title>
+    <meta name="description" content="Upload your PDF resume to receive instant ATS compatibility analysis and skill gap identification.">
 
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/upload.css">
+
+    <!-- Mozilla PDF.js CDN for Lightweight Browser PDF Text Parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
 <body>
 
-    <div class="container">
+    <!-- Header Shell -->
+    <header class="app-header">
+        <div class="container">
+            <div class="navbar-inner">
+                <a class="brand-logo" href="index.html">
+                    <span class="logo-icon" aria-hidden="true"><i class="bi bi-file-earmark-text"></i></span>
+                    Resume<span>IQ</span>
+                </a>
 
-        <div class="upload-card">
+                <nav class="nav-menu" id="navMenu" aria-label="Main Navigation">
+                    <a class="nav-link" href="index.html#home">Home</a>
+                    <a class="nav-link" href="index.html#features">Features</a>
+                    <a class="nav-link" href="index.html#timeline">How It Works</a>
+                </nav>
 
-            <h1>Upload Your Resume</h1>
-
-            <p class="subtitle">
-                Upload your resume in PDF format to get an AI-powered analysis.
-            </p>
-
-            <div class="upload-area" id="uploadArea">
-
-                <div class="upload-icon">
-                    📄
+                <div class="nav-actions">
+                    <a href="index.html" class="btn btn-outline btn-sm">
+                        <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to Home
+                    </a>
+                    <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle Navigation Menu" aria-expanded="false">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
                 </div>
-
-                <h2>Drag & Drop Resume</h2>
-
-                <p>or</p>
-
-                <input
-                    type="file"
-                    id="resumeInput"
-                    accept=".pdf"
-                    hidden
-                >
-
-                <button id="browseBtn">
-                    Browse Files
-                </button>
-
-                <p class="note">
-                    Only PDF files are allowed.
-                </p>
-
             </div>
-
-            <div id="fileInfo"></div>
-
-            <button id="analyzeBtn" disabled>
-                Analyze Resume
-            </button>
-
         </div>
+    </header>
 
-    </div>
+    <!-- Upload Content -->
+    <main class="main-content">
+        <section class="upload-section">
+            <div class="container">
+                <div class="upload-card-wrapper">
+                    <div class="upload-card">
+                        <div class="upload-header">
+                            <span class="badge badge-primary" style="margin-bottom: 0.75rem;">Step 1 of 3</span>
+                            <h1>Upload Your Resume</h1>
+                            <p>Select your target role and upload your resume in PDF format for AI analysis.</p>
+                        </div>
 
+                        <!-- Target Job Role Selector -->
+                        <div class="form-group role-select-group">
+                            <label for="jobRoleSelect" class="form-label">
+                                <i class="bi bi-briefcase-fill" style="color: var(--primary);" aria-hidden="true"></i> Target Job Role
+                            </label>
+                            <select id="jobRoleSelect" class="form-select" aria-describedby="roleSelectHelp">
+                                <option value="Software Engineer">Software Engineer / Full Stack Developer</option>
+                                <option value="Frontend Developer">Frontend Developer (React / Web)</option>
+                                <option value="Backend Engineer">Backend Engineer (Node / Python / Java)</option>
+                                <option value="Data Analyst">Data Analyst / Data Scientist</option>
+                                <option value="Product Manager">Product Manager / Project Lead</option>
+                                <option value="General Professional">General Professional</option>
+                            </select>
+                            <span id="roleSelectHelp" class="sr-only">Select the job role you are applying for to get tailored keyword feedback</span>
+                        </div>
+
+                        <!-- Drag and Drop Dropzone -->
+                        <div class="upload-dropzone" id="uploadDropzone" tabindex="0" role="button" aria-label="Drag and drop your PDF resume here, or press enter to browse files">
+                            <div class="upload-dropzone-icon" aria-hidden="true">
+                                <i class="bi bi-cloud-arrow-up-fill"></i>
+                            </div>
+
+                            <div class="upload-dropzone-title">Drag & Drop your resume PDF here</div>
+                            <div class="upload-dropzone-sub">or click anywhere to browse files</div>
+
+                            <input type="file" id="resumeInput" accept=".pdf" hidden aria-label="Upload PDF Resume File Input">
+
+                            <button type="button" class="btn btn-outline btn-sm" id="browseBtn" tabindex="-1">
+                                <i class="bi bi-folder2-open" aria-hidden="true"></i> Browse Files
+                            </button>
+
+                            <div class="upload-hint">Supported format: PDF only • Maximum file size: 5 MB</div>
+                        </div>
+
+                        <!-- Optional Target Job Description Textarea -->
+                        <div class="form-group jd-input-group" style="margin-top: 1.25rem;">
+                            <label for="jobDescriptionInput" class="form-label" style="display: flex; justify-content: space-between; align-items: center; font-weight: 600;">
+                                <span><i class="bi bi-file-earmark-text-fill" style="color: var(--primary);" aria-hidden="true"></i> Target Job Description <span style="font-weight: normal; color: var(--slate-500);">(Optional)</span></span>
+                                <span style="font-size: 0.75rem; color: var(--slate-400); font-weight: normal;">Paste JD for Job Match Score</span>
+                            </label>
+                            <textarea id="jobDescriptionInput" class="form-select" style="min-height: 90px; resize: vertical; font-family: inherit; font-size: 0.875rem; line-height: 1.5; padding: 0.75rem;" placeholder="Paste the job description here to compare your resume directly against target job requirements..."></textarea>
+                        </div>
+
+                        <!-- Validation Error Banner -->
+                        <div class="error-banner" id="errorBanner" role="alert" aria-live="polite">
+                            <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                            <span id="errorMessage">Please upload a valid PDF file.</span>
+                        </div>
+
+                        <!-- File Preview Container -->
+                        <div id="filePreviewArea" aria-live="polite"></div>
+
+                        <!-- Submit Action -->
+                        <div class="action-area">
+                            <button id="analyzeBtn" class="btn btn-primary btn-lg btn-block" disabled>
+                                <i class="bi bi-cpu-fill" aria-hidden="true"></i> Analyze Resume
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Shell -->
+    <footer class="app-footer">
+        <div class="container">
+            <div class="footer-bottom" style="border: none; padding: 0;">
+                <p>© 2026 ResumeIQ • Privacy Guaranteed (Files are analyzed client-side).</p>
+                <p><a href="index.html" style="color: var(--slate-400);">Back to Home</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/script.js"></script>
+    <script src="js/analyzer.js"></script>
+    <script src="js/api-service.js"></script>
+    <script src="js/auth-service.js"></script>
+    <script src="js/analysis-service.js"></script>
     <script src="js/upload.js"></script>
-
 </body>
 </html>

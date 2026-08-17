@@ -1,127 +1,202 @@
-/* Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+/* ==========================================================================
+   ResumeIQ Upload Page Styles
+   Imports global design system tokens from css/global.css
+   ========================================================================== */
 
-/* Body */
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: linear-gradient(135deg, #2563eb, #1e40af);
+.upload-section {
+    padding: 3rem 0 5rem;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    font-family: 'Inter', sans-serif;
+    min-height: calc(100vh - 72px - 250px);
 }
 
-/* Main Container */
-.container {
+.upload-card-wrapper {
     width: 100%;
-    display: flex;
-    justify-content: center;
-    padding: 20px;
+    max-width: 680px;
+    margin: 0 auto;
 }
 
-/* Upload Card */
 .upload-card {
-    background: #ffffff;
-    width: 100%;
-    max-width: 650px;
-    border-radius: 20px;
-    padding: 40px;
+    background-color: var(--bg-surface);
+    border-radius: var(--radius-xl);
+    padding: 3rem;
+    border: 1px solid var(--slate-200);
+    box-shadow: var(--shadow-md);
     text-align: center;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
 }
 
-/* Heading */
-.upload-card h1 {
-    color: #1e3a8a;
-    margin-bottom: 10px;
+.upload-header {
+    margin-bottom: 2rem;
 }
 
-/* Subtitle */
-.subtitle {
-    color: #555;
-    margin-bottom: 30px;
+.upload-header h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--slate-900);
+    letter-spacing: -0.5px;
+    margin-bottom: 0.5rem;
 }
 
-/* Upload Area */
-.upload-area {
-    border: 3px dashed #2563eb;
-    border-radius: 15px;
-    padding: 40px 20px;
-    transition: 0.3s;
+.upload-header p {
+    color: var(--text-muted);
+    font-size: 1rem;
 }
 
-.upload-area:hover {
-    background: #eff6ff;
+/* Form Group Layout */
+.role-select-group {
+    margin-bottom: 1.75rem;
+    text-align: left;
 }
 
-/* Upload Icon */
-.upload-icon {
-    font-size: 60px;
-    margin-bottom: 15px;
-}
-
-/* Browse Button */
-#browseBtn {
-    margin-top: 20px;
-    background: #2563eb;
-    color: white;
-    border: none;
-    padding: 12px 28px;
-    font-size: 16px;
-    border-radius: 8px;
+/* Drag & Drop Target Area */
+.upload-dropzone {
+    border: 2px dashed var(--primary-border);
+    border-radius: var(--radius-lg);
+    padding: 3rem 1.5rem;
+    background-color: var(--primary-light);
+    transition: var(--transition-normal);
     cursor: pointer;
-    transition: 0.3s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
-#browseBtn:hover {
-    background: #1d4ed8;
-}
-
-/* Note */
-.note {
-    margin-top: 20px;
-    color: gray;
-    font-size: 14px;
-}
-
-/* File Info */
-#fileInfo {
-    margin-top: 25px;
-    font-weight: bold;
-    color: #1e3a8a;
-}
-
-/* Analyze Button */
-#analyzeBtn {
-    margin-top: 30px;
-    width: 100%;
-    padding: 15px;
-    background: #10b981;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 17px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-#analyzeBtn:hover {
-    background: #059669;
-}
-
-/* Drag & Drop Highlight */
-.upload-area.dragging {
+.upload-dropzone:hover, .upload-dropzone.is-dragging {
+    border-color: var(--primary);
     background-color: #dbeafe;
-    border-color: #1d4ed8;
-    transform: scale(1.02);
+    transform: scale(1.01);
 }
 
-#analyzeBtn:disabled {
-    background: #9ca3af;
-    cursor: not-allowed;
+.upload-dropzone-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: var(--radius-full);
+    background-color: var(--bg-surface);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin-bottom: 1.25rem;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-fast);
+}
+
+.upload-dropzone:hover .upload-dropzone-icon {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.upload-dropzone-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--slate-900);
+    margin-bottom: 0.35rem;
+}
+
+.upload-dropzone-sub {
+    font-size: 0.9rem;
+    color: var(--slate-500);
+    margin-bottom: 1.25rem;
+}
+
+.upload-hint {
+    font-size: 0.825rem;
+    color: var(--slate-400);
+    margin-top: 1rem;
+}
+
+/* Selected File Preview Box */
+.file-preview-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem;
+    background-color: var(--bg-subtle);
+    border: 1px solid var(--slate-200);
+    border-radius: var(--radius-md);
+    margin-top: 1.5rem;
+    animation: fadeIn 0.3s ease;
+}
+
+.file-details {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-align: left;
+}
+
+.file-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-sm);
+    background-color: #fee2e2;
+    color: #ef4444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    flex-shrink: 0;
+}
+
+.file-name {
+    font-weight: 700;
+    color: var(--slate-900);
+    font-size: 0.95rem;
+    word-break: break-all;
+}
+
+.file-meta {
+    font-size: 0.825rem;
+    color: var(--slate-500);
+}
+
+.remove-file-btn {
+    color: var(--slate-400);
+    padding: 0.4rem;
+    border-radius: var(--radius-sm);
+    transition: var(--transition-fast);
+}
+
+.remove-file-btn:hover {
+    color: var(--danger);
+    background-color: var(--danger-light);
+}
+
+/* Error Banner */
+.error-banner {
+    display: none;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1.25rem;
+    background-color: var(--danger-light);
+    border: 1px solid var(--danger-border);
+    border-radius: var(--radius-md);
+    color: var(--danger);
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-top: 1.25rem;
+    text-align: left;
+}
+
+.error-banner.is-visible {
+    display: flex;
+}
+
+.action-area {
+    margin-top: 2rem;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 640px) {
+    .upload-card {
+        padding: 2rem 1.25rem;
+    }
 }

@@ -1,130 +1,679 @@
-/* ===========================
-   ResumeIQ Global Styles
-=========================== */
+/* ==========================================================================
+   ResumeIQ Design System & Global Styles
+   Core Tech Stack: Pure HTML5, CSS3, Vanilla ES6 JavaScript (No Frameworks)
+   ========================================================================== */
 
-/* Google Font */
-* {
+/* --------------------------------------------------------------------------
+   1. Design Tokens & CSS Variables
+   -------------------------------------------------------------------------- */
+:root {
+    /* Brand Colors */
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --primary-light: #eff6ff;
+    --primary-border: #bfdbfe;
+    --primary-glow: rgba(37, 99, 235, 0.15);
+
+    /* Neutral Palette (Slate) */
+    --slate-50: #f8fafc;
+    --slate-100: #f1f5f9;
+    --slate-200: #e2e8f0;
+    --slate-300: #cbd5e1;
+    --slate-400: #94a3b8;
+    --slate-500: #64748b;
+    --slate-600: #475569;
+    --slate-700: #334155;
+    --slate-800: #1e293b;
+    --slate-900: #0f172a;
+
+    /* Semantic Status Colors */
+    --success: #10b981;
+    --success-hover: #059669;
+    --success-light: #ecfdf5;
+    --success-border: #a7f3d0;
+
+    --warning: #f59e0b;
+    --warning-light: #fffbeb;
+    --warning-border: #fde68a;
+
+    --danger: #ef4444;
+    --danger-light: #fef2f2;
+    --danger-border: #fecaca;
+
+    --info: #06b6d4;
+    --info-light: #ecfeff;
+
+    /* Surfaces & Backgrounds */
+    --bg-main: #f8fafc;
+    --bg-surface: #ffffff;
+    --bg-subtle: #f1f5f9;
+    --bg-glass: rgba(255, 255, 255, 0.85);
+
+    /* Text Colors */
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --text-inverse: #ffffff;
+
+    /* Typography */
+    --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-heading: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+    /* Spacing & Radii */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --radius-xl: 28px;
+    --radius-full: 9999px;
+
+    /* Elevation & Shadows */
+    --shadow-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+    --shadow-sm: 0 4px 12px 0 rgba(15, 23, 42, 0.05);
+    --shadow-md: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+    --shadow-lg: 0 20px 40px -15px rgba(15, 23, 42, 0.12);
+    --shadow-glow: 0 12px 30px rgba(37, 99, 235, 0.22);
+
+    /* Motion */
+    --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --------------------------------------------------------------------------
+   2. Reset & Base Styles
+   -------------------------------------------------------------------------- */
+*, *::before, *::after {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
 }
 
-/* Theme Variables */
-:root {
-    --primary: #2563eb;
-    --primary-dark: #1d4ed8;
-    --secondary: #4f46e5;
-    --accent: #06b6d4;
-
-    --background: #f8fafc;
-    --surface: rgba(255, 255, 255, 0.75);
-
-    --text: #0f172a;
-    --text-light: #64748b;
-
-    --border: rgba(148, 163, 184, 0.2);
-
-    --shadow-sm: 0 8px 24px rgba(15, 23, 42, 0.08);
-    --shadow-lg: 0 20px 60px rgba(15, 23, 42, 0.12);
-
-    --radius: 18px;
-    --transition: 0.3s ease;
-}
-
-/* Base Styles */
 html {
     scroll-behavior: smooth;
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
 }
 
 body {
-    font-family: "Inter", sans-serif;
-    background: var(--background);
-    color: var(--text);
+    font-family: var(--font-sans);
+    background-color: var(--bg-main);
+    color: var(--text-main);
     line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
 }
 
-img {
+img, svg {
     display: block;
     max-width: 100%;
 }
 
 a {
+    color: inherit;
     text-decoration: none;
+}
+
+button, input, select, textarea {
+    font: inherit;
     color: inherit;
 }
 
 button {
-    font-family: inherit;
     cursor: pointer;
+    background: none;
+    border: none;
 }
 
-ul {
+ul, ol {
     list-style: none;
 }
 
-/* ===========================
-   Reusable Container
-=========================== */
-
-.container {
-    width: min(90%, 1200px);
-    margin: 0 auto;
+/* Accessibility Focus States */
+:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
 }
 
-/* ===========================
-   Buttons
-=========================== */
+/* --------------------------------------------------------------------------
+   3. Common Layout & Grid Containers
+   -------------------------------------------------------------------------- */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
 
+.container-narrow {
+    max-width: 800px;
+}
+
+.container-sm {
+    max-width: 600px;
+}
+
+.main-content {
+    flex: 1;
+}
+
+/* --------------------------------------------------------------------------
+   4. Universal Header & Navigation Shell
+   -------------------------------------------------------------------------- */
+.app-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: var(--bg-glass);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--slate-200);
+    transition: var(--transition-normal);
+}
+
+.navbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 72px;
+}
+
+.brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--slate-900);
+    letter-spacing: -0.5px;
+}
+
+.brand-logo span {
+    color: var(--primary);
+}
+
+.brand-logo .logo-icon {
+    width: 34px;
+    height: 34px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+    color: white;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 10px var(--primary-glow);
+}
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+}
+
+.nav-link {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--slate-600);
+    transition: var(--transition-fast);
+    position: relative;
+    padding: 0.25rem 0;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: var(--primary);
+}
+
+.nav-link::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--primary);
+    border-radius: var(--radius-full);
+    transition: var(--transition-normal);
+}
+
+.nav-link:hover::after, .nav-link.active::after {
+    width: 100%;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.mobile-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 28px;
+    height: 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 110;
+}
+
+.mobile-toggle span {
+    width: 100%;
+    height: 2.5px;
+    background-color: var(--slate-800);
+    border-radius: var(--radius-full);
+    transition: var(--transition-normal);
+}
+
+.mobile-toggle.is-active span:nth-child(1) {
+    transform: translateY(8.5px) rotate(45deg);
+}
+
+.mobile-toggle.is-active span:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-toggle.is-active span:nth-child(3) {
+    transform: translateY(-8.5px) rotate(-45deg);
+}
+
+/* --------------------------------------------------------------------------
+   5. Buttons & Interactive Controls
+   -------------------------------------------------------------------------- */
 .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
-    padding: 14px 28px;
-
-    border-radius: 12px;
-
-    font-size: 16px;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
     font-weight: 600;
-
-    transition: all .3s ease;
-
-    cursor: pointer;
+    border-radius: var(--radius-md);
+    transition: var(--transition-normal);
+    white-space: nowrap;
+    border: 1px solid transparent;
 }
 
 .btn-primary {
-    background: var(--primary);
-    color: white;
-    border: none;
+    background-color: var(--primary);
+    color: var(--text-inverse);
+    box-shadow: 0 4px 14px var(--primary-glow);
 }
 
 .btn-primary:hover {
-    background: var(--primary-dark);
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-lg);
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-glow);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background-color: var(--slate-900);
+    color: var(--text-inverse);
+}
+
+.btn-secondary:hover {
+    background-color: var(--slate-800);
+    transform: translateY(-2px);
 }
 
 .btn-outline {
-    border: 1px solid #CBD5E1;
-    background: white;
-    color: var(--text);
+    background-color: var(--bg-surface);
+    border-color: var(--slate-300);
+    color: var(--slate-700);
 }
 
 .btn-outline:hover {
-    background: #F1F5F9;
+    background-color: var(--slate-100);
+    border-color: var(--slate-400);
+    color: var(--slate-900);
+    transform: translateY(-2px);
 }
 
-/* ===========================
-   Glass Card
-=========================== */
+.btn-ghost {
+    background-color: transparent;
+    color: var(--slate-600);
+}
+
+.btn-ghost:hover {
+    background-color: var(--slate-100);
+    color: var(--slate-900);
+}
+
+.btn-lg {
+    padding: 0.9rem 1.85rem;
+    font-size: 1.05rem;
+    border-radius: var(--radius-md);
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    border-radius: var(--radius-sm);
+}
+
+.btn-block {
+    width: 100%;
+}
+
+.btn:disabled, .btn.disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   6. SaaS Cards & Surface Components
+   -------------------------------------------------------------------------- */
+.card {
+    background-color: var(--bg-surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--slate-200);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-normal);
+    overflow: hidden;
+}
+
+.card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-border);
+}
 
 .glass-card {
-    background: rgba(255,255,255,0.75);
-    backdrop-filter: blur(18px);
+    background: var(--bg-glass);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
 
-    border: 1px solid rgba(255,255,255,0.4);
+/* --------------------------------------------------------------------------
+   7. Form Inputs & Select Controls
+   -------------------------------------------------------------------------- */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+    text-align: left;
+}
 
-    border-radius: 24px;
+.form-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--slate-700);
+}
 
-    box-shadow: var(--shadow-sm);
+.form-select, .form-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1.5px solid var(--slate-300);
+    border-radius: var(--radius-md);
+    background-color: var(--bg-surface);
+    color: var(--slate-900);
+    font-size: 0.95rem;
+    transition: var(--transition-fast);
+}
+
+.form-select:hover, .form-input:hover {
+    border-color: var(--slate-400);
+}
+
+.form-select:focus, .form-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+    outline: none;
+}
+
+/* --------------------------------------------------------------------------
+   8. Badges & Tags
+   -------------------------------------------------------------------------- */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: var(--radius-full);
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.badge-primary {
+    background-color: var(--primary-light);
+    color: var(--primary);
+    border: 1px solid var(--primary-border);
+}
+
+.badge-success {
+    background-color: var(--success-light);
+    color: var(--success-hover);
+    border: 1px solid var(--success-border);
+}
+
+.badge-warning {
+    background-color: var(--warning-light);
+    color: #d97706;
+    border: 1px solid var(--warning-border);
+}
+
+.badge-danger {
+    background-color: var(--danger-light);
+    color: var(--danger);
+    border: 1px solid var(--danger-border);
+}
+
+.badge-slate {
+    background-color: var(--slate-100);
+    color: var(--slate-700);
+    border: 1px solid var(--slate-200);
+}
+
+/* --------------------------------------------------------------------------
+   9. Section Typography & Headers
+   -------------------------------------------------------------------------- */
+.section-header {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto 3.5rem;
+}
+
+.section-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--slate-900);
+    letter-spacing: -0.5px;
+    margin-bottom: 0.85rem;
+}
+
+.section-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+/* --------------------------------------------------------------------------
+   10. Universal Footer Shell
+   -------------------------------------------------------------------------- */
+.app-footer {
+    background-color: var(--slate-900);
+    color: var(--slate-300);
+    padding: 4rem 0 2rem;
+    margin-top: auto;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 2fr repeat(3, 1fr);
+    gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+.footer-brand .brand-logo {
+    color: var(--text-inverse);
+    margin-bottom: 1rem;
+}
+
+.footer-desc {
+    font-size: 0.95rem;
+    color: var(--slate-400);
+    line-height: 1.6;
+    max-width: 320px;
+}
+
+.footer-col-title {
+    color: var(--text-inverse);
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 1.25rem;
+}
+
+.footer-links-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.footer-links-list a {
+    color: var(--slate-400);
+    font-size: 0.9rem;
+    transition: var(--transition-fast);
+}
+
+.footer-links-list a:hover {
+    color: var(--text-inverse);
+    transform: translateX(3px);
+}
+
+.footer-bottom {
+    padding-top: 2rem;
+    border-top: 1px solid var(--slate-800);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.875rem;
+    color: var(--slate-500);
+}
+
+.social-links {
+    display: flex;
+    gap: 1rem;
+}
+
+.social-icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-full);
+    background-color: var(--slate-800);
+    color: var(--slate-300);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-fast);
+}
+
+.social-icon-btn:hover {
+    background-color: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* --------------------------------------------------------------------------
+   11. Responsive Breakpoints
+   -------------------------------------------------------------------------- */
+@media (max-width: 992px) {
+    .section-title {
+        font-size: 1.85rem;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 2.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .mobile-toggle {
+        display: flex;
+    }
+
+    .nav-menu {
+        position: fixed;
+        top: 72px;
+        left: 0;
+        right: 0;
+        background-color: var(--bg-surface);
+        padding: 1.5rem;
+        border-bottom: 1px solid var(--slate-200);
+        box-shadow: var(--shadow-lg);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.25rem;
+        transform: translateY(-150%);
+        opacity: 0;
+        pointer-events: none;
+        transition: var(--transition-normal);
+    }
+
+    .nav-menu.is-active {
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   12. Screen Reader Utility & Reduced Motion Preferences
+   -------------------------------------------------------------------------- */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .brand-logo {
+        font-size: 1.3rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }

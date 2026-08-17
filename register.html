@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | ResumeIQ</title>
+    <meta name="description" content="Create a free ResumeIQ account to store your resume analysis history and track ATS improvements.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/upload.css">
+</head>
+<body>
+
+    <!-- Header Shell -->
+    <header class="app-header">
+        <div class="container">
+            <div class="navbar-inner">
+                <a class="brand-logo" href="index.html">
+                    <span class="logo-icon" aria-hidden="true"><i class="bi bi-file-earmark-text"></i></span>
+                    Resume<span>IQ</span>
+                </a>
+
+                <nav class="nav-menu" id="navMenu" aria-label="Main Navigation">
+                    <a class="nav-link" href="index.html#home">Home</a>
+                    <a class="nav-link" href="index.html#features">Features</a>
+                    <a class="nav-link" href="index.html#timeline">How It Works</a>
+                </nav>
+
+                <div class="nav-actions">
+                    <a href="index.html" class="btn btn-outline btn-sm">
+                        <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content" style="display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 160px); padding: 2rem 1rem;">
+        <div class="container-narrow" style="max-width: 460px; width: 100%;">
+            <div class="card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 2.5rem; box-shadow: var(--shadow-md);">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div style="width: 48px; height: 48px; background: rgba(59, 130, 246, 0.1); border-radius: 12px; color: var(--primary); display: inline-flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1rem;">
+                        <i class="bi bi-person-plus"></i>
+                    </div>
+                    <h1 style="font-size: 1.75rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem;">Create your account</h1>
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">Join ResumeIQ to save analyses & track career progress</p>
+                </div>
+
+                <!-- Error Alert Banner -->
+                <div id="registerAlert" role="alert" aria-live="polite" style="display: none; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171; padding: 0.875rem 1rem; border-radius: var(--radius-md); font-size: 0.875rem; margin-bottom: 1.5rem;">
+                    <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> <span id="registerAlertText">Registration error.</span>
+                </div>
+
+                <!-- Registration Form -->
+                <form id="registerForm" novalidate>
+                    <div style="margin-bottom: 1.25rem;">
+                        <label for="regEmail" style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.5rem;">Email Address</label>
+                        <input type="email" id="regEmail" name="email" class="form-input" placeholder="name@example.com" required autocomplete="email" style="width: 100%; padding: 0.75rem 1rem; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-main); font-size: 0.95rem;">
+                    </div>
+
+                    <div style="margin-bottom: 1.25rem;">
+                        <label for="regPassword" style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.5rem;">Password (Min. 8 characters)</label>
+                        <input type="password" id="regPassword" name="password" class="form-input" placeholder="••••••••" required autocomplete="new-password" minlength="8" style="width: 100%; padding: 0.75rem 1rem; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-main); font-size: 0.95rem;">
+                    </div>
+
+                    <div style="margin-bottom: 1.75rem;">
+                        <label for="regConfirmPassword" style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.5rem;">Confirm Password</label>
+                        <input type="password" id="regConfirmPassword" name="confirmPassword" class="form-input" placeholder="••••••••" required autocomplete="new-password" minlength="8" style="width: 100%; padding: 0.75rem 1rem; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-main); font-size: 0.95rem;">
+                    </div>
+
+                    <button type="submit" id="regSubmitBtn" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.875rem; font-weight: 600;">
+                        <span>Create Account</span> <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                    </button>
+                </form>
+
+                <div style="text-align: center; margin-top: 1.75rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); font-size: 0.9rem; color: var(--text-muted);">
+                    Already have an account? <a href="login.html" style="color: var(--primary); font-weight: 600;">Login</a>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- App Footer -->
+    <footer class="app-footer" style="padding: 1.5rem 0; text-align: center; font-size: 0.85rem; color: var(--text-muted); border-top: 1px solid var(--border-color);">
+        <div class="container">
+            <p>&copy; 2026 ResumeIQ. Privacy-First Resume & Career Insights Engine.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/api-service.js"></script>
+    <script src="js/auth-service.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const registerForm = document.getElementById('registerForm');
+            const emailInput = document.getElementById('regEmail');
+            const passwordInput = document.getElementById('regPassword');
+            const confirmInput = document.getElementById('regConfirmPassword');
+            const alertBox = document.getElementById('registerAlert');
+            const alertText = document.getElementById('registerAlertText');
+            const submitBtn = document.getElementById('regSubmitBtn');
+
+            // Redirect if already logged in
+            if (ResumeIQAuth.isAuthenticated()) {
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
+            registerForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                alertBox.style.display = 'none';
+
+                const email = emailInput.value.trim();
+                const password = passwordInput.value;
+                const confirm = confirmInput.value;
+
+                if (!email) {
+                    alertText.textContent = 'Please enter a valid email address.';
+                    alertBox.style.display = 'block';
+                    return;
+                }
+
+                if (!password || password.length < 8) {
+                    alertText.textContent = 'Password must be at least 8 characters in length.';
+                    alertBox.style.display = 'block';
+                    return;
+                }
+
+                if (password !== confirm) {
+                    alertText.textContent = 'Passwords do not match. Please verify both fields.';
+                    alertBox.style.display = 'block';
+                    return;
+                }
+
+                // Set loading state
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:inline-block; width:1rem; height:1rem; border:2px solid currentColor; border-right-color:transparent; border-radius:50%; animation:spin 0.75s linear infinite; margin-right:0.5rem;"></span> Creating Account...`;
+
+                try {
+                    const result = await ResumeIQAuth.register(email, password);
+
+                    if (result.success) {
+                        window.location.href = 'dashboard.html';
+                    } else {
+                        alertText.textContent = result.error || 'Registration failed. An account with this email may already exist.';
+                        alertBox.style.display = 'block';
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = `<span>Create Account</span> <i class="bi bi-arrow-right" aria-hidden="true"></i>`;
+                    }
+                } catch (err) {
+                    alertText.textContent = 'Network or server error. Please try again.';
+                    alertBox.style.display = 'block';
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = `<span>Create Account</span> <i class="bi bi-arrow-right" aria-hidden="true"></i>`;
+                }
+            });
+        });
+    </script>
+    <style>
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</body>
+</html>

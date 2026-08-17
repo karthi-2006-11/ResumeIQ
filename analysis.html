@@ -3,125 +3,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resume Analysis | ResumeIQ</title>
+    <title>Resume Analysis Report | ResumeIQ</title>
+    <meta name="description" content="Detailed ATS score breakdown, skill matches, formatting quality, and personalized suggestions for your resume.">
+
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/analysis.css">
 </head>
 <body>
 
-    <div class="container">
+    <!-- Header Shell -->
+    <header class="app-header">
+        <div class="container">
+            <div class="navbar-inner">
+                <a class="brand-logo" href="index.html">
+                    <span class="logo-icon" aria-hidden="true"><i class="bi bi-file-earmark-text"></i></span>
+                    Resume<span>IQ</span>
+                </a>
 
-        <div class="analysis-card">
+                <nav class="nav-menu" id="navMenu" aria-label="Main Navigation">
+                    <a class="nav-link" href="index.html#home">Home</a>
+                    <a class="nav-link" href="index.html#features">Features</a>
+                    <a class="nav-link" href="upload.html">Upload New Resume</a>
+                </nav>
 
-            <h1>Resume Analysis Report</h1>
+                <div class="nav-actions">
+                    <a href="upload.html" class="btn btn-primary btn-sm">
+                        <i class="bi bi-cloud-upload" aria-hidden="true"></i> Analyze Another
+                    </a>
+                    <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle Navigation Menu" aria-expanded="false">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
 
-            <p class="subtitle">
-                Here's a quick overview of your resume performance.
-            </p>
+    <!-- Main Dashboard Section -->
+    <main class="main-content">
+        <section class="dashboard-section">
+            <div class="container">
 
-            <!-- ATS Score -->
-            <div class="score-section">
+                <!-- Report Meta Header Bar -->
+                <div class="dashboard-header-bar">
+                    <div class="report-meta-info">
+                        <div class="brand-logo" style="font-size: 1.8rem; color: var(--primary);" aria-hidden="true">
+                            <i class="bi bi-file-earmark-check-fill"></i>
+                        </div>
+                        <div class="report-title-group">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                                <h1>Resume Analysis Report</h1>
+                                <span id="analysisModeBadge" class="badge badge-success">Heuristic PDF Text Analysis</span>
+                            </div>
+                            <div class="report-sub-meta">
+                                <span><i class="bi bi-briefcase" aria-hidden="true"></i> Role: <strong id="targetRoleHeader" style="color: var(--slate-800);">Software Engineer</strong></span>
+                                <span>•</span>
+                                <span><i class="bi bi-file-earmark-pdf" aria-hidden="true"></i> File: <span id="fileNameHeader">Resume.pdf</span></span>
+                            </div>
+                        </div>
+                    </div>
 
-                <h2>ATS Score</h2>
+                    <div class="dashboard-actions">
+                        <button type="button" class="btn btn-outline btn-sm" id="generateAiBtn" aria-label="Generate AI Insights">
+                            <i class="bi bi-stars" style="color: var(--primary);" aria-hidden="true"></i> Generate AI Insights
+                        </button>
+                        <button type="button" class="btn btn-outline btn-sm" id="printReportBtn" aria-label="Print or export analysis report to PDF">
+                            <i class="bi bi-printer" aria-hidden="true"></i> Export / Print
+                        </button>
+                        <button type="button" class="btn btn-primary btn-sm" id="uploadAgainBtn">
+                            <i class="bi bi-arrow-repeat" aria-hidden="true"></i> Upload Another
+                        </button>
+                    </div>
+                </div>
 
-                <div class="score-circle">
-                    <span>85%</span>
+                <!-- Privacy & Opt-In Notice for AI -->
+                <div style="font-size: 0.785rem; color: var(--slate-500); background: #f1f5f9; padding: 0.5rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+                    <span><i class="bi bi-shield-check" style="color: var(--primary);"></i> <strong>Privacy Notice:</strong> AI processing is optional. Clicking "Generate AI Insights" sends non-sensitive resume metrics to the server AI provider for qualitative feedback.</span>
+                </div>
+
+                <!-- Job Description Match Container -->
+                <div id="jobMatchSectionContainer" style="display: none;"></div>
+
+                <!-- AI Insights Container -->
+                <div id="aiInsightsContainer" style="display: none;"></div>
+
+                <!-- Main Dashboard 2-Column Grid -->
+                <div class="dashboard-grid">
+
+                    <!-- Left Column: ATS Score & Metric Bars -->
+                    <div class="ats-score-card">
+                        <span class="badge badge-primary">ATS Score Result</span>
+
+                        <!-- Circular Gauge Meter -->
+                        <div class="score-circle-wrapper" role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" aria-label="ATS Compatibility Score Meter" id="scoreMeterAccessibility">
+                            <svg class="score-circle-svg" viewBox="0 0 160 160" aria-hidden="true">
+                                <circle class="score-bg-ring" cx="80" cy="80" r="70"></circle>
+                                <circle class="score-progress-ring" id="scoreRing" cx="80" cy="80" r="70"></circle>
+                            </svg>
+                            <div class="score-center-text">
+                                <div class="score-number" id="atsScoreVal">0%</div>
+                                <div class="score-label">ATS Score</div>
+                            </div>
+                        </div>
+
+                        <div class="ats-verdict" id="atsVerdictBadge">High ATS Match</div>
+
+                        <!-- Metric Progress Bars -->
+                        <div class="metrics-group">
+                            <div>
+                                <div class="metric-header">
+                                    <span>Resume Quality</span>
+                                    <span id="qualityScoreVal" style="color: var(--success); font-weight: 700;">88%</span>
+                                </div>
+                                <div class="metric-bar-track" role="progressbar" aria-valuenow="88" aria-valuemin="0" aria-valuemax="100" aria-label="Resume Quality Metric">
+                                    <div class="metric-bar-fill fill-quality"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="metric-header">
+                                    <span>Skills Match</span>
+                                    <span id="skillsScoreVal" style="color: var(--primary); font-weight: 700;">75%</span>
+                                </div>
+                                <div class="metric-bar-track" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" aria-label="Skills Match Metric">
+                                    <div class="metric-bar-fill fill-skills"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="metric-header">
+                                    <span>Formatting Compliance</span>
+                                    <span id="formattingScoreVal" style="color: #d97706; font-weight: 700;">92%</span>
+                                </div>
+                                <div class="metric-bar-track" role="progressbar" aria-valuenow="92" aria-valuemin="0" aria-valuemax="100" aria-label="Formatting Compliance Metric">
+                                    <div class="metric-bar-fill fill-formatting"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Content Cards -->
+                    <div class="dashboard-content-col">
+
+                        <!-- Summary Card -->
+                        <div class="summary-card">
+                            <h2><i class="bi bi-file-text-fill" style="color: var(--primary);" aria-hidden="true"></i> Resume Performance Overview</h2>
+                            <p id="summaryTextEl">
+                                Your resume has a strong structural layout and clear technical sectioning. Adding more targeted skill keywords, quantified impact achievements, and project links will significantly increase your interview callback rate.
+                            </p>
+                        </div>
+
+                        <!-- Skills Found vs Missing Grid -->
+                        <div class="skills-grid">
+
+                            <!-- Skills Found -->
+                            <div class="skills-card">
+                                <h3 style="color: var(--success-hover);">
+                                    <i class="bi bi-patch-check-fill" style="color: var(--success);" aria-hidden="true"></i> Skills Found
+                                </h3>
+                                <div class="skills-tags-list" id="foundSkillsContainer" aria-label="Skills found in resume">
+                                    <!-- Dynamic JS Tags -->
+                                </div>
+                            </div>
+
+                            <!-- Missing Skills -->
+                            <div class="skills-card">
+                                <h3 style="color: var(--danger);">
+                                    <i class="bi bi-exclamation-triangle-fill" style="color: var(--danger);" aria-hidden="true"></i> Missing Role Keywords
+                                </h3>
+                                <div class="skills-tags-list" id="missingSkillsContainer" aria-label="Missing target role skills">
+                                    <!-- Dynamic JS Tags -->
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Smart Suggestions Section -->
+                        <div class="suggestions-card">
+                            <h3><i class="bi bi-lightbulb-fill" style="color: var(--warning);" aria-hidden="true"></i> Smart Recommendations for Improvement</h3>
+                            <div class="suggestions-list" id="suggestionsContainer">
+                                <!-- Dynamic JS Suggestions -->
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Disclaimer Notice -->
+                <div style="margin-top: 2.5rem; text-align: center; font-size: 0.825rem; color: var(--slate-400);">
+                    <p><i class="bi bi-info-circle" aria-hidden="true"></i> <strong>Disclaimer:</strong> ResumeIQ provides heuristic resume analysis and advisory AI insights for guidance. It does not guarantee specific ATS or hiring results.</p>
                 </div>
 
             </div>
-            <div class="metrics">
+        </section>
+    </main>
 
-    <div class="metric">
-        <p>Resume Quality</p>
-        <div class="progress">
-            <div class="progress-fill quality"></div>
-        </div>
-    </div>
-
-    <div class="metric">
-        <p>Skills Match</p>
-        <div class="progress">
-            <div class="progress-fill skills"></div>
-        </div>
-    </div>
-
-    <div class="metric">
-        <p>Formatting</p>
-        <div class="progress">
-            <div class="progress-fill formatting"></div>
-        </div>
-    </div>
-
-</div>
-
-<div class="summary">
-    <h3>📋 Resume Summary</h3>
-
-    <p>
-        Your resume has a good structure and includes important technical skills.
-        Adding more projects, measurable achievements, and keywords related to the
-        job description can significantly improve your ATS score.
-    </p>
-</div>
-
-            <!-- Analysis Grid -->
-            <div class="analysis-grid">
-
-                <!-- Skills Found -->
-                <div class="card">
-                    <h3>✅ Skills Found</h3>
-
-                    <ul>
-                        <li>HTML</li>
-                        <li>CSS</li>
-                        <li>JavaScript</li>
-                        <li>Bootstrap</li>
-                    </ul>
-
-                </div>
-
-                <!-- Missing Skills -->
-                <div class="card">
-                    <h3>❌ Missing Skills</h3>
-
-                    <ul>
-                        <li>React</li>
-                        <li>Git</li>
-                        <li>Node.js</li>
-                        <li>REST API</li>
-                    </ul>
-
-                </div>
-
+    <!-- Footer Shell -->
+    <footer class="app-footer">
+        <div class="container">
+            <div class="footer-bottom" style="border: none; padding: 0;">
+                <p>© 2026 ResumeIQ • Heuristic PDF Analysis & AI Insights.</p>
+                <p><a href="upload.html" style="color: var(--slate-400);">Analyze Another Resume</a></p>
             </div>
-
-            <!-- Suggestions -->
-            <div class="suggestions">
-
-                <h3>💡 Suggestions</h3>
-
-                <ul>
-                    <li>Add more measurable achievements.</li>
-                    <li>Include your GitHub profile.</li>
-                    <li>Add more technical projects.</li>
-                    <li>Use stronger action verbs.</li>
-                </ul>
-
-            </div>
-
-            <button id="uploadAgainBtn">
-                Upload Another Resume
-            </button>
-
         </div>
+    </footer>
 
-    </div>
-
+    <!-- Scripts -->
+    <script src="js/script.js"></script>
+    <script src="js/analyzer.js"></script>
+    <script src="js/api-service.js"></script>
+    <script src="js/auth-service.js"></script>
+    <script src="js/analysis-service.js"></script>
     <script src="js/analysis.js"></script>
-
 </body>
 </html>
