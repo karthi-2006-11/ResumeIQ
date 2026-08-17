@@ -224,7 +224,7 @@ function buildActionPlan(issues) {
  */
 function generateSafeRewriteSuggestions(structured) {
     const suggestions = [];
-    const bullets = structured.bullets || [];
+    const bullets = structured.bullets || (structured.experienceStats ? structured.experienceStats.bullets : []) || [];
 
     for (let i = 0; i < Math.min(5, bullets.length); i++) {
         const item = bullets[i];

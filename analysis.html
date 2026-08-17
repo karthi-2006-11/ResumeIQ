@@ -74,6 +74,9 @@
                     </div>
 
                     <div class="dashboard-actions">
+                        <button type="button" class="btn btn-outline btn-sm" id="openWorkspaceBtn" aria-label="Open Resume Optimization Workspace">
+                            <i class="bi bi-sliders" style="color: var(--primary);" aria-hidden="true"></i> Optimization Workspace
+                        </button>
                         <button type="button" class="btn btn-outline btn-sm" id="generateAiBtn" aria-label="Generate AI Insights">
                             <i class="bi bi-stars" style="color: var(--primary);" aria-hidden="true"></i> Generate AI Insights
                         </button>
@@ -96,6 +99,12 @@
 
                 <!-- Resume Improvement Assistant Container -->
                 <div id="improvementSectionContainer" style="display: none; margin-bottom: 2rem;"></div>
+
+                <!-- Phase 19 Resume Optimization Workspace Container -->
+                <div id="optimizationWorkspaceContainer" style="display: none; margin-bottom: 2rem;"></div>
+
+                <!-- Clean Print/Export Container for Optimized Resume -->
+                <div id="printableOptimizedResume" style="display: none;"></div>
 
                 <!-- AI Insights Container -->
                 <div id="aiInsightsContainer" style="display: none;"></div>

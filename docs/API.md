@@ -1,6 +1,6 @@
-# ResumeIQ — API Reference Documentation (v2.0 / Phase 18)
+# ResumeIQ — API Reference Documentation (v2.0 / Phase 19)
 
-ResumeIQ provides a RESTful backend API for JWT User Authentication, Version 2.0 PDF resume analysis, Phase 18 Resume Improvement Assistant, target job description matching, user-owned MongoDB history persistence, and qualitative AI career feedback.
+ResumeIQ provides a RESTful backend API for JWT User Authentication, Version 2.0 PDF resume analysis, Phase 18 Resume Improvement Assistant, Phase 19 Resume Optimization Workspace, target job description matching, user-owned MongoDB history persistence, and qualitative AI career feedback.
 
 ---
 
@@ -8,7 +8,7 @@ ResumeIQ provides a RESTful backend API for JWT User Authentication, Version 2.0
 
 * **Base URL**: `http://localhost:5000`
 * **API Version**: `v1` (`/api/v1`)
-* **Engine Version**: `2.0` (Resume Intelligence), `18.0` (Improvement Assistant)
+* **Engine Version**: `2.0` (Resume Intelligence), `18.0` (Improvement Assistant), `19.0` (Optimization Workspace)
 * **Authorization Header**: Protected endpoints require `Authorization: Bearer <token>`.
 * **Request ID Header**: Every response includes `X-Request-ID: <uuid>` for tracing and operational auditing.
 

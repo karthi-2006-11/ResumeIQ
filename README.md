@@ -8,6 +8,14 @@ Built with **pure HTML5, CSS3, and Vanilla JavaScript** on the frontend and a **
 
 ## 🌟 Currently Available Features
 
+### 🛠️ Resume Optimization Workspace (Phase 19)
+* **Read-Only Original Resume Separation**: The original uploaded resume text and analysis remain immutable. The user works on a dedicated **Optimized Resume Draft** stored in client-side session state (`resumeIQ_draft_workspace`).
+* **Suggestion Review Workflows**: Supports `pending`, `accepted`, `edited`, and `dismissed` states for each improvement recommendation.
+* **Structured Resume Editor**: Lightweight interactive text editors for Summary, Technical Skills (tag list), Experience Bullets, Projects, Education, and Contact Information.
+* **Undo & Reset Controls**: Provides single-click **Undo Last Change** (restores snapshot from undo stack) and **Reset Draft** (reverts draft back to original initial state).
+* **Deterministic Re-Analysis & Score Comparison**: Clicking **[⚡ Re-analyze Optimized Draft]** compiles draft text and re-runs `ResumeIQAnalyzer` deterministically. Honest before/after score comparison table displays exact `+Diff` / `-Diff` score changes (ATS Score, Skills Match, Quality Score, Job Match Score) with **zero artificial inflation**.
+* **Client-Side Print / PDF Export**: Generates a clean printable optimized resume layout via browser print CSS excluding UI score gauges, buttons, and internal metadata.
+
 ### 💡 Resume Improvement Assistant (Phase 18)
 * **Verified Strengths Detection**: Highlights candidate resume strengths backed by actual Resume Intelligence v2 signals (complete contact info, strong technical skill coverage, clean section structure, quantified metrics).
 * **Prioritized Action Plan**: Generates a clear, ordered list of recommendations ranked by priority (`high`, `medium`, `low`).

@@ -512,6 +512,218 @@ document.addEventListener('DOMContentLoaded', () => {
             tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
     }
 
+    // Open Optimization Workspace Handler
+    const openWorkspaceBtn = document.getElementById('openWorkspaceBtn');
+    if (openWorkspaceBtn) {
+        openWorkspaceBtn.addEventListener('click', () => {
+            if (window.ResumeIQWorkspace) {
+                const draft = window.ResumeIQWorkspace.getDraft(activeAnalysis);
+                renderOptimizationWorkspaceUI(draft);
+                const container = document.getElementById('optimizationWorkspaceContainer');
+                if (container) {
+                    container.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+    }
+
+    function renderOptimizationWorkspaceUI(draft) {
+        const container = document.getElementById('optimizationWorkspaceContainer');
+        if (!container || !draft) return;
+
+        container.style.display = 'block';
+
+        const origAts = draft.originalAnalysis.scores.atsScore;
+        const origSkills = draft.originalAnalysis.scores.skillsMatchPct;
+        const origQuality = draft.originalAnalysis.scores.qualityScore;
+        const origJobMatch = draft.originalAnalysis.jobMatchScore;
+
+        const opt = draft.optimizedAnalysis;
+        const diffs = opt ? opt.diffs : null;
+
+        const formatDiffBadge = (diffVal) => {
+            if (diffVal === null || diffVal === undefined) return '<span style="color: var(--slate-400);">--</span>';
+            if (diffVal > 0) return `<span class="badge badge-success">+${diffVal}%</span>`;
+            if (diffVal < 0) return `<span class="badge" style="background: var(--danger-light); color: var(--danger);">${diffVal}%</span>`;
+            return '<span class="badge" style="background: #f1f5f9; color: var(--slate-600);">0%</span>';
+        };
+
+        const comparisonHtml = `
+            <div style="background: #f8fafc; border: 1px solid var(--slate-200); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.5rem;">
+                <h4 style="font-size: 0.95rem; color: var(--slate-900); margin-bottom: 0.75rem; display: flex; align-items: center; justify-content: space-between;">
+                    <span><i class="bi bi-arrows-collapse"></i> Deterministic Before vs After Score Comparison</span>
+                    <span style="font-size: 0.75rem; font-weight: 500; color: var(--slate-500);">Source: Engine v2.0</span>
+                </h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; text-align: center;">
+                    <div style="background: white; padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--slate-200);">
+                        <div style="font-size: 0.75rem; color: var(--slate-500); font-weight: 600;">ATS Score</div>
+                        <div style="font-size: 1.2rem; font-weight: 800; color: var(--slate-900); margin: 0.25rem 0;">${origAts}% ${opt ? `➔ ${opt.scores.atsScore}%` : ''}</div>
+                        <div>${diffs ? formatDiffBadge(diffs.atsScore) : '<span style="font-size: 0.75rem; color: var(--slate-400);">Click Re-analyze</span>'}</div>
+                    </div>
+                    <div style="background: white; padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--slate-200);">
+                        <div style="font-size: 0.75rem; color: var(--slate-500); font-weight: 600;">Skills Match</div>
+                        <div style="font-size: 1.2rem; font-weight: 800; color: var(--primary); margin: 0.25rem 0;">${origSkills}% ${opt ? `➔ ${opt.scores.skillsMatchPct}%` : ''}</div>
+                        <div>${diffs ? formatDiffBadge(diffs.skillsMatchPct) : '<span style="font-size: 0.75rem; color: var(--slate-400);">Click Re-analyze</span>'}</div>
+                    </div>
+                    <div style="background: white; padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--slate-200);">
+                        <div style="font-size: 0.75rem; color: var(--slate-500); font-weight: 600;">Quality Score</div>
+                        <div style="font-size: 1.2rem; font-weight: 800; color: var(--success); margin: 0.25rem 0;">${origQuality}% ${opt ? `➔ ${opt.scores.qualityScore}%` : ''}</div>
+                        <div>${diffs ? formatDiffBadge(diffs.qualityScore) : '<span style="font-size: 0.75rem; color: var(--slate-400);">Click Re-analyze</span>'}</div>
+                    </div>
+                    ${origJobMatch !== null ? `
+                    <div style="background: white; padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--slate-200);">
+                        <div style="font-size: 0.75rem; color: var(--slate-500); font-weight: 600;">Job Match</div>
+                        <div style="font-size: 1.2rem; font-weight: 800; color: #8b5cf6; margin: 0.25rem 0;">${origJobMatch}% ${opt && opt.jobMatch ? `➔ ${opt.jobMatch.matchScore}%` : ''}</div>
+                        <div>${diffs ? formatDiffBadge(diffs.jobMatchScore) : '<span style="font-size: 0.75rem; color: var(--slate-400);">Click Re-analyze</span>'}</div>
+                    </div>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+
+        const bullets = draft.experience.length > 0 ? draft.experience[0].bullets : [];
+
+        container.innerHTML = `
+            <div class="summary-card" style="background: white; border: 1px solid var(--slate-200); border-radius: var(--radius-lg); padding: 1.75rem; box-shadow: var(--shadow-sm);">
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--slate-200);">
+                    <div>
+                        <h3 style="font-size: 1.3rem; font-weight: 800; color: var(--slate-900); margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="bi bi-sliders" style="color: var(--primary);"></i> Resume Optimization Workspace (Phase 19)
+                        </h3>
+                        <p style="color: var(--slate-600); font-size: 0.875rem; margin: 0.25rem 0 0 0;">Safe interactive drafting. Original uploaded resume remains read-only & immutable.</p>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <button type="button" class="btn btn-primary btn-sm" id="reanalyzeDraftBtn">
+                            <i class="bi bi-cpu"></i> Re-analyze Optimized Draft
+                        </button>
+                        <button type="button" class="btn btn-outline btn-sm" id="undoDraftBtn">
+                            <i class="bi bi-arrow-counterclockwise"></i> Undo
+                        </button>
+                        <button type="button" class="btn btn-outline btn-sm" id="resetDraftBtn" style="color: var(--danger);">
+                            <i class="bi bi-arrow-circle-left"></i> Reset
+                        </button>
+                        <button type="button" class="btn btn-outline btn-sm" id="exportDraftBtn">
+                            <i class="bi bi-printer"></i> Print / Export
+                        </button>
+                    </div>
+                </div>
+
+                ${comparisonHtml}
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+                    <div>
+                        <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--slate-800); margin-bottom: 0.75rem;"><i class="bi bi-pencil"></i> Professional Summary Draft</h4>
+                        <textarea id="draftSummaryInput" rows="4" style="width: 100%; border: 1px solid var(--slate-300); border-radius: var(--radius-md); padding: 0.75rem; font-size: 0.875rem; color: var(--slate-900);">${escapeHTML(draft.summary || '')}</textarea>
+
+                        <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--slate-800); margin: 1.25rem 0 0.75rem;"><i class="bi bi-tags"></i> Technical Skills Draft (Comma Separated)</h4>
+                        <input type="text" id="draftSkillsInput" value="${escapeHTML((draft.skills || []).join(', '))}" style="width: 100%; border: 1px solid var(--slate-300); border-radius: var(--radius-md); padding: 0.75rem; font-size: 0.875rem; color: var(--slate-900);" />
+                    </div>
+
+                    <div>
+                        <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--slate-800); margin-bottom: 0.75rem;"><i class="bi bi-list-task"></i> Experience Bullet Points</h4>
+                        <div id="draftBulletsList" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            ${bullets.map((b, idx) => `
+                                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                    <input type="text" class="draft-bullet-input" data-index="${idx}" value="${escapeHTML(b)}" style="flex: 1; border: 1px solid var(--slate-300); border-radius: var(--radius-sm); padding: 0.5rem; font-size: 0.85rem;" />
+                                    <button type="button" class="btn btn-outline btn-sm delete-bullet-btn" data-index="${idx}" style="color: var(--danger); padding: 0.4rem 0.6rem;"><i class="bi bi-trash"></i></button>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button type="button" class="btn btn-outline btn-sm" id="addBulletBtn" style="margin-top: 0.75rem;">
+                            <i class="bi bi-plus-lg"></i> Add Experience Bullet
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Event listener wiring inside workspace UI
+        const reanalyzeBtn = container.querySelector('#reanalyzeDraftBtn');
+        if (reanalyzeBtn) {
+            reanalyzeBtn.addEventListener('click', () => {
+                // Update draft text values from form inputs first
+                const sumInput = container.querySelector('#draftSummaryInput');
+                const skillsInput = container.querySelector('#draftSkillsInput');
+                if (sumInput) draft.summary = sumInput.value.trim();
+                if (skillsInput) draft.skills = skillsInput.value.split(',').map(s => s.trim()).filter(Boolean);
+
+                const bulletInputs = container.querySelectorAll('.draft-bullet-input');
+                if (draft.experience.length > 0) {
+                    draft.experience[0].bullets = Array.from(bulletInputs).map(i => i.value.trim()).filter(Boolean);
+                }
+
+                const updated = window.ResumeIQWorkspace.reanalyzeDraft(draft, activeAnalysis);
+                renderOptimizationWorkspaceUI(updated);
+            });
+        }
+
+        const undoBtn = container.querySelector('#undoDraftBtn');
+        if (undoBtn) {
+            undoBtn.addEventListener('click', () => {
+                const restored = window.ResumeIQWorkspace.undo(draft);
+                renderOptimizationWorkspaceUI(restored);
+            });
+        }
+
+        const resetBtn = container.querySelector('#resetDraftBtn');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                if (confirm('Reset your optimized draft? All uncommitted edits in this session will be reverted to initial state.')) {
+                    const fresh = window.ResumeIQWorkspace.reset(activeAnalysis);
+                    renderOptimizationWorkspaceUI(fresh);
+                }
+            });
+        }
+
+        const exportBtn = container.querySelector('#exportDraftBtn');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', () => {
+                const printable = document.getElementById('printableOptimizedResume');
+                if (printable && window.ResumeIQWorkspace) {
+                    const cleanText = window.ResumeIQWorkspace.convertDraftToText(draft);
+                    printable.innerHTML = `
+                        <div style="font-family: Arial, sans-serif; color: #111; line-height: 1.5; padding: 20px;">
+                            <h1 style="margin: 0 0 5px 0; font-size: 24px;">${escapeHTML(draft.contact.name || 'Candidate Name')}</h1>
+                            <p style="margin: 0 0 15px 0; font-size: 13px; color: #444;">
+                                ${escapeHTML(draft.contact.email)} | ${escapeHTML(draft.contact.phone)} | ${escapeHTML(draft.contact.linkedin || '')}
+                            </p>
+                            <hr style="border: none; border-top: 1px solid #ccc; margin-bottom: 15px;" />
+                            <h3 style="font-size: 16px; margin: 15px 0 5px 0; text-transform: uppercase;">Professional Summary</h3>
+                            <p style="font-size: 13px; margin: 0 0 15px 0;">${escapeHTML(draft.summary)}</p>
+                            <h3 style="font-size: 16px; margin: 15px 0 5px 0; text-transform: uppercase;">Technical Skills</h3>
+                            <p style="font-size: 13px; margin: 0 0 15px 0;">${escapeHTML((draft.skills || []).join(', '))}</p>
+                            <h3 style="font-size: 16px; margin: 15px 0 5px 0; text-transform: uppercase;">Work Experience</h3>
+                            ${(draft.experience[0]?.bullets || []).map(b => `<p style="font-size: 13px; margin: 3px 0;">• ${escapeHTML(b)}</p>`).join('')}
+                        </div>
+                    `;
+                    window.print();
+                }
+            });
+        }
+
+        const addBulletBtn = container.querySelector('#addBulletBtn');
+        if (addBulletBtn) {
+            addBulletBtn.addEventListener('click', () => {
+                if (draft.experience.length > 0) {
+                    draft.experience[0].bullets.push('Added new experience accomplishment bullet.');
+                    window.ResumeIQWorkspace.saveDraft(draft);
+                    renderOptimizationWorkspaceUI(draft);
+                }
+            });
+        }
+
+        container.querySelectorAll('.delete-bullet-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const idx = parseInt(btn.getAttribute('data-index'), 10);
+                if (draft.experience.length > 0 && !isNaN(idx)) {
+                    draft.experience[0].bullets.splice(idx, 1);
+                    window.ResumeIQWorkspace.saveDraft(draft);
+                    renderOptimizationWorkspaceUI(draft);
+                }
+            });
+        });
+    }
+
     if (uploadAgainBtn) {
         uploadAgainBtn.addEventListener('click', () => {
             window.location.href = 'upload.html';

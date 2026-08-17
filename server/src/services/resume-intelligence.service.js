@@ -389,7 +389,8 @@ function extractStructuredResume(text, pageCount = 1) {
             duplicateBulletsCount: expAnalysis.duplicateBulletsCount,
             strongBullets: expAnalysis.strongBullets,
             mediumBullets: expAnalysis.mediumBullets,
-            weakBullets: expAnalysis.weakBullets
+            weakBullets: expAnalysis.weakBullets,
+            bullets: expAnalysis.bullets
         },
         metadata: {
             wordCount,
