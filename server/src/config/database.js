@@ -19,7 +19,8 @@ async function connectDB() {
         });
 
         isDbConnected = true;
-        console.log(`[MongoDB] Connected successfully to: ${config.mongodbUri}`);
+        const safeUri = config.mongodbUri.replace(/\/\/[^:]+:[^@]+@/, '//***:***@');
+        console.log(`[MongoDB] Connected successfully to: ${safeUri}`);
 
         mongoose.connection.on('disconnected', () => {
             isDbConnected = false;

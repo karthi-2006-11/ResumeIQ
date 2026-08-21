@@ -9,6 +9,7 @@ function loadConfig(envOverride = process.env) {
 
     const config = {
         port: parseInt(envOverride.PORT || '5000', 10),
+        host: envOverride.HOST || '0.0.0.0',
         nodeEnv: nodeEnv,
         clientOrigin: envOverride.CLIENT_ORIGIN || 'http://localhost:5500',
         mongodbUri: envOverride.MONGODB_URI || 'mongodb://127.0.0.1:27017/resumeiq',

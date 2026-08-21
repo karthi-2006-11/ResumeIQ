@@ -7,9 +7,9 @@ async function startServer() {
     await connectDB();
 
     // 2. Start HTTP Express Server
-    const server = app.listen(config.port, () => {
+    const server = app.listen(config.port, config.host, () => {
         console.log(`=======================================================`);
-        console.log(`🚀 ResumeIQ API Server running on port ${config.port}`);
+        console.log(`🚀 ResumeIQ API Server running on ${config.host}:${config.port}`);
         console.log(`🌐 Environment: ${config.nodeEnv}`);
         console.log(`🔒 Allowed Origin: ${config.clientOrigin}`);
         console.log(`🤖 AI Status: ${config.aiEnabled ? 'Enabled' : 'Disabled'} (Provider: ${config.aiProvider})`);

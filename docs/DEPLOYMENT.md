@@ -32,7 +32,7 @@ Create a `.env` file on your production server or configure environment variable
 | :--- | :--- | :--- | :--- |
 | `NODE_ENV` | **Yes** | `production` | Enables production error sanitization, strict CORS, and security rules. |
 | `PORT` | Optional | `5000` | Port for Express HTTP API server. |
-| `CLIENT_ORIGIN` | **Yes** | `https://resumeiq.example.com` | Allowed CORS origin for browser requests. Must NOT be `*` in production. |
+| `CLIENT_ORIGIN` | **Yes** | `https://karthi-2006-11.github.io` | Allowed CORS origin for browser requests. Note: Origin header omits path suffix. |
 | `MONGODB_URI` | **Yes** | `mongodb+srv://user:pass@cluster.mongodb.net/resumeiq` | Production MongoDB connection string. |
 | `JWT_SECRET` | **Yes** | `32+ char random string` | Secret key for signing user authentication tokens. Must be secure. |
 | `JWT_EXPIRES_IN` | Optional | `7d` | Expiration window for JWT tokens. |
