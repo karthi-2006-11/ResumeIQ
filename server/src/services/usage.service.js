@@ -83,6 +83,19 @@ function formatUsagePayload(userDoc) {
 }
 
 /**
+ * Helper to retrieve raw persisted usage subdocument without Mongoose schema defaults
+ */
+function getPersistedUsage(userDoc) {
+    if (!userDoc) return null;
+    if (userDoc._doc && userDoc._doc.usage) return userDoc._doc.usage;
+    if (typeof userDoc.toObject === 'function') {
+        const plain = userDoc.toObject({ defaults: false });
+        if (plain && plain.usage) return plain.usage;
+    }
+    return userDoc.usage || null;
+}
+
+/**
  * Retrieves user usage metrics from MongoDB with lazy reset if month changed
  */
 async function getUserUsage(userId) {
@@ -104,7 +117,7 @@ async function getUserUsage(userId) {
     }
 
     const currentPeriod = getCurrentUtcPeriod();
-    const rawUsage = user.toObject ? user.toObject().usage : user.usage;
+    const rawUsage = getPersistedUsage(user);
     const isUninitializedOnDisk = !rawUsage || !rawUsage.lastResetDate;
     const isOutdatedPeriod = rawUsage && rawUsage.lastResetDate !== currentPeriod;
 
@@ -113,8 +126,8 @@ async function getUserUsage(userId) {
             userId,
             {
                 $set: {
-                    'usage.analysisCount': isUninitializedOnDisk ? 0 : (isOutdatedPeriod ? 0 : (user.usage?.analysisCount || 0)),
-                    'usage.jobMatchCount': isUninitializedOnDisk ? 0 : (isOutdatedPeriod ? 0 : (user.usage?.jobMatchCount || 0)),
+                    'usage.analysisCount': isUninitializedOnDisk ? 0 : (isOutdatedPeriod ? 0 : (rawUsage?.analysisCount || 0)),
+                    'usage.jobMatchCount': isUninitializedOnDisk ? 0 : (isOutdatedPeriod ? 0 : (rawUsage?.jobMatchCount || 0)),
                     'usage.lastResetDate': currentPeriod
                 }
             },
@@ -173,7 +186,7 @@ async function reserveQuota(userId, quotaType = 'analysis') {
     const limits = getTierLimits(tier);
     const limit = quotaType === 'jobMatch' ? limits.jobMatchLimit : limits.analysisLimit;
 
-    const rawUsage = user.toObject ? user.toObject().usage : user.usage;
+    const rawUsage = getPersistedUsage(user);
     const isUninitializedOnDisk = !rawUsage || !rawUsage.lastResetDate;
     const isOutdatedPeriod = rawUsage && rawUsage.lastResetDate !== currentPeriod;
 
@@ -182,8 +195,8 @@ async function reserveQuota(userId, quotaType = 'analysis') {
             userId,
             {
                 $set: {
-                    'usage.analysisCount': isUninitializedOnDisk ? 0 : (isOutdatedPeriod ? 0 : (user.usage?.analysisCount || 0)),
-                    'usage.jobMatchCount': isUninitializedOnDisk ? 0 : (isOutdatedPeriod ? 0 : (user.usage?.jobMatchCount || 0)),
+                    'usage.analysisCount': isUninitializedOnDisk ? 0 : (isOutdatedPeriod ? 0 : (rawUsage?.analysisCount || 0)),
+                    'usage.jobMatchCount': isUninitializedOnDisk ? 0 : (isOutdatedPeriod ? 0 : (rawUsage?.jobMatchCount || 0)),
                     'usage.lastResetDate': currentPeriod
                 }
             },

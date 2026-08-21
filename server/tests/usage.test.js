@@ -330,12 +330,17 @@ test('Phase 23 — Account Usage Tracking & Tiered Quota Guard Suite', async (t)
         // Unset usage field on disk to simulate pre-Phase-23 existing user
         if (isConnected()) {
             await User.findByIdAndUpdate(userId, { $unset: { usage: "" } });
+
+            // Verify raw BSON document on disk lacks usage field (_doc.usage is undefined)
+            const checkUser = await User.findById(userId);
+            assert.strictEqual(checkUser._doc.usage, undefined, 'Raw stored BSON document must lack usage field');
+            assert.ok(checkUser.toObject().usage, 'Mongoose defaults still supply in-memory usage object');
         } else {
             const mock = mockUserStore.get(userId);
             if (mock) delete mock.usage;
         }
 
-        // 1. Dashboard usage request must show 0 / 10
+        // 1. Dashboard usage request must show 0 / 10 and initialize usage on disk
         const usageRes = await jsonRequest(app, 'GET', '/api/v1/auth/usage', null, token);
         assert.strictEqual(usageRes.status, 200);
         assert.strictEqual(usageRes.body.usage.analysis.used, 0);
@@ -344,6 +349,13 @@ test('Phase 23 — Account Usage Tracking & Tiered Quota Guard Suite', async (t)
         const reservation = await reserveQuota(userId, 'analysis');
         assert.strictEqual(reservation.success, true, 'Quota reservation must succeed for pre-Phase-23 existing user after disk initialization');
         assert.strictEqual(reservation.usage.analysis.used, 1, 'Analysis usage count must be 1 after reservation');
+
+        // 3. Verify disk document now physically contains usage subdocument
+        if (isConnected()) {
+            const finalUser = await User.findById(userId);
+            assert.ok(finalUser._doc.usage, 'Usage subdocument must now be physically stored on disk in BSON');
+            assert.strictEqual(finalUser._doc.usage.analysisCount, 1);
+        }
     });
 
     await t.test('10. Usage Preservation — Initialization logic does NOT reset valid existing usage within current month', async () => {
