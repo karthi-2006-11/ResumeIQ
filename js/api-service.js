@@ -11,7 +11,7 @@ const ResumeIQApiService = (() => {
      * 1. Window Global Override (window.RESUMEIQ_API_URL)
      * 2. Co-hosted Same Origin (if frontend served directly by API server on port 5000)
      * 3. Local Development Fallback (http://localhost:5000)
-     * 4. Deployed Production Backend (https://resumeiq-lvnc.onrender.com)
+     * 4. Deployed Production Backend (https://resumeiq-lync.onrender.com)
      */
     function getBaseUrl() {
         if (typeof window !== 'undefined' && window.RESUMEIQ_API_URL) {
@@ -25,7 +25,7 @@ const ResumeIQApiService = (() => {
                 return 'http://localhost:5000';
             }
         }
-        return 'https://resumeiq-lvnc.onrender.com';
+        return 'https://resumeiq-lync.onrender.com';
     }
 
     const CONFIG = {
