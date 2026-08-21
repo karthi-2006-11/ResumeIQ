@@ -150,9 +150,6 @@ const ResumeIQAuth = (() => {
             if (!authLinks) {
                 authLinks = document.createElement('div');
                 authLinks.className = 'auth-nav-links';
-                authLinks.style.display = 'inline-flex';
-                authLinks.style.gap = '1rem';
-                authLinks.style.alignItems = 'center';
                 navMenu.appendChild(authLinks);
             }
 
@@ -175,9 +172,6 @@ const ResumeIQAuth = (() => {
         if (!authActionBox) {
             authActionBox = document.createElement('div');
             authActionBox.className = 'auth-action-box';
-            authActionBox.style.display = 'inline-flex';
-            authActionBox.style.gap = '0.5rem';
-            authActionBox.style.alignItems = 'center';
             // Insert before mobile toggle if present
             const mobileToggle = navActions.querySelector('.mobile-toggle');
             if (mobileToggle) {
@@ -190,10 +184,10 @@ const ResumeIQAuth = (() => {
         if (isAuth) {
             const userEmail = user ? user.email : 'My Account';
             authActionBox.innerHTML = `
-                <div class="user-pill-dropdown" style="display:inline-flex; align-items:center; gap:0.5rem;">
+                <div class="user-pill-dropdown">
                     <a href="dashboard.html" class="btn btn-outline btn-sm" title="Logged in as ${userEmail}">
                         <i class="bi bi-person-circle" aria-hidden="true"></i>
-                        <span class="user-email-text" style="max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${userEmail}</span>
+                        <span class="user-email-text">${userEmail}</span>
                     </a>
                     <button type="button" class="btn btn-secondary btn-sm" id="headerLogoutBtn" title="Log out of ResumeIQ">
                         <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Logout

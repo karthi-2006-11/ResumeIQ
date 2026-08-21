@@ -162,13 +162,18 @@ ul, ol {
 /* --------------------------------------------------------------------------
    4. Universal Header & Navigation Shell
    -------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------
+   4. Universal Header & Navigation Shell
+   -------------------------------------------------------------------------- */
 .app-header {
     position: sticky;
     top: 0;
     z-index: 100;
-    background-color: var(--bg-glass);
+    background-color: rgba(255, 255, 255, 0.92);
     backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--slate-200);
+    box-shadow: 0 1px 4px 0 rgba(15, 23, 42, 0.03);
     transition: var(--transition-normal);
 }
 
@@ -176,17 +181,19 @@ ul, ol {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 72px;
+    height: 68px;
 }
 
 .brand-logo {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 10px;
-    font-size: 1.5rem;
+    font-size: 1.45rem;
     font-weight: 800;
     color: var(--slate-900);
-    letter-spacing: -0.5px;
+    letter-spacing: -0.4px;
+    text-decoration: none;
+    line-height: 1;
 }
 
 .brand-logo span {
@@ -198,53 +205,99 @@ ul, ol {
     height: 34px;
     background: linear-gradient(135deg, var(--primary), var(--primary-hover));
     color: white;
-    border-radius: 10px;
-    display: flex;
+    border-radius: 9px;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     font-size: 1.1rem;
-    box-shadow: 0 4px 10px var(--primary-glow);
+    box-shadow: 0 3px 8px var(--primary-glow);
+    flex-shrink: 0;
 }
 
 .nav-menu {
     display: flex;
     align-items: center;
-    gap: 1.75rem;
+    gap: 1.5rem;
 }
 
 .nav-link {
-    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.925rem;
     font-weight: 500;
     color: var(--slate-600);
     transition: var(--transition-fast);
     position: relative;
-    padding: 0.25rem 0;
+    padding: 0.35rem 0;
+    text-decoration: none;
+    line-height: 1.2;
+}
+
+.nav-link i {
+    font-size: 0.95rem;
+    opacity: 0.85;
 }
 
 .nav-link:hover, .nav-link.active {
     color: var(--primary);
+    font-weight: 600;
+}
+
+.nav-link:hover i, .nav-link.active i {
+    opacity: 1;
 }
 
 .nav-link::after {
     content: "";
     position: absolute;
-    bottom: -2px;
+    bottom: -3px;
     left: 0;
     width: 0;
     height: 2px;
     background-color: var(--primary);
     border-radius: var(--radius-full);
-    transition: var(--transition-normal);
+    transition: var(--transition-fast);
 }
 
 .nav-link:hover::after, .nav-link.active::after {
     width: 100%;
 }
 
+.auth-nav-links {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.5rem;
+    border-left: 1px solid var(--slate-200);
+    padding-left: 1.25rem;
+    margin-left: 0.25rem;
+}
+
 .nav-actions {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.75rem;
+}
+
+.auth-action-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.user-pill-dropdown {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.user-email-text {
+    max-width: 130px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .mobile-toggle {
@@ -609,7 +662,7 @@ ul, ol {
 
     .nav-menu {
         position: fixed;
-        top: 72px;
+        top: 68px;
         left: 0;
         right: 0;
         background-color: var(--bg-surface);
@@ -623,12 +676,25 @@ ul, ol {
         opacity: 0;
         pointer-events: none;
         transition: var(--transition-normal);
+        z-index: 99;
     }
 
     .nav-menu.is-active {
         transform: translateY(0);
         opacity: 1;
         pointer-events: auto;
+    }
+
+    .auth-nav-links {
+        border-left: none;
+        padding-left: 0;
+        margin-left: 0;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.25rem;
+        width: 100%;
+        border-top: 1px solid var(--slate-200);
+        padding-top: 1rem;
     }
 
     .footer-grid {
