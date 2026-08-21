@@ -86,6 +86,14 @@ const ResumeIQAnalysisService = (() => {
                             if (apiResponse.jobMatch) {
                                 resultPayload.jobMatch = apiResponse.jobMatch;
                             }
+                        } else if (apiResponse.success === false) {
+                            // Backend responded but rejected the upload (e.g. invalid signature, empty file, corrupted).
+                            // Do NOT fall back to local analyzer for server-rejected files.
+                            return {
+                                success: false,
+                                error: apiResponse.error || 'The uploaded resume was rejected by the server.',
+                                code: apiResponse.code || 'UPLOAD_REJECTED'
+                            };
                         }
                     } catch (err) {
                         console.warn('[AnalysisService] Backend API call failed. Falling back to Local Analyzer:', err);

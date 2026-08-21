@@ -86,7 +86,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleFileSelection(file) {
         hideError();
 
-        // 1. PDF Extension / Type Check
+        // 1. Zero-Byte File Guard
+        if (!file || file.size === 0) {
+            showError('The uploaded file is empty (0 bytes). Please attach a valid PDF document.');
+            clearFile();
+            return;
+        }
+
+        // 2. PDF Extension / Type Check
         const isPdfType = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
         if (!isPdfType) {
             showError('Invalid file type. Please upload a PDF document (.pdf).');
@@ -94,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // 2. File Size Check (Max 5MB)
+        // 3. File Size Check (Max 5MB)
         if (file.size > MAX_FILE_SIZE_BYTES) {
             const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
             showError(`File size exceeds 5MB limit. Selected file is ${fileSizeMB} MB.`);
@@ -211,12 +218,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const extractedText = await extractTextFromPDF(selectedFile);
 
             // Execute Master Analysis Service Layer (with optional Job Description)
+            let result = null;
             if (window.ResumeIQAnalysisService) {
-                await window.ResumeIQAnalysisService.analyze(selectedFile, extractedText, {
+                result = await window.ResumeIQAnalysisService.analyze(selectedFile, extractedText, {
                     targetRole: targetRole,
                     jobDescription: jobDescription,
                     mode: 'auto'
                 });
+            }
+
+            if (result && result.success === false) {
+                showError(result.error || 'The uploaded file was rejected. Please select a valid PDF resume.');
+                analyzeBtn.disabled = false;
+                analyzeBtn.innerHTML = '<i class="bi bi-cpu-fill" aria-hidden="true"></i> Analyze Resume';
+                return;
             }
 
             // Redirect to loading animation page
