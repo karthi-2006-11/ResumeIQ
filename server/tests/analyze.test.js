@@ -153,3 +153,45 @@ test('POST /api/v1/analyze returns 400 INVALID_REQUEST when no file is uploaded'
     assert.strictEqual(res.body.success, false);
     assert.strictEqual(res.body.error.code, 'INVALID_REQUEST');
 });
+
+test('POST /api/v1/analyze returns 400 INVALID_PDF_SIGNATURE for renamed non-PDF files', async () => {
+    const fakeBuffer = Buffer.from('Plain text content inside a fake PDF file!', 'utf8');
+    const res = await sendMultipartRequest(app, 'POST', '/api/v1/analyze', { targetRole: 'Software Engineer' }, {
+        fieldname: 'file',
+        filename: 'fake_resume.pdf',
+        mimetype: 'application/pdf',
+        buffer: fakeBuffer
+    });
+
+    assert.strictEqual(res.status, 400);
+    assert.strictEqual(res.body.success, false);
+    assert.strictEqual(res.body.error.code, 'INVALID_PDF_SIGNATURE');
+});
+
+test('POST /api/v1/analyze returns 400 EMPTY_FILE for zero-byte uploads', async () => {
+    const emptyBuffer = Buffer.alloc(0);
+    const res = await sendMultipartRequest(app, 'POST', '/api/v1/analyze', { targetRole: 'Software Engineer' }, {
+        fieldname: 'file',
+        filename: 'empty_resume.pdf',
+        mimetype: 'application/pdf',
+        buffer: emptyBuffer
+    });
+
+    assert.strictEqual(res.status, 400);
+    assert.strictEqual(res.body.success, false);
+    assert.strictEqual(res.body.error.code, 'EMPTY_FILE');
+});
+
+test('POST /api/v1/analyze returns 422 CORRUPTED_PDF for malformed PDF buffers', async () => {
+    const corruptBuffer = Buffer.from('%PDF-1.4\r\nMalformed binary structure that cannot be parsed by pdf-parse!', 'utf8');
+    const res = await sendMultipartRequest(app, 'POST', '/api/v1/analyze', { targetRole: 'Software Engineer' }, {
+        fieldname: 'file',
+        filename: 'corrupt_resume.pdf',
+        mimetype: 'application/pdf',
+        buffer: corruptBuffer
+    });
+
+    assert.strictEqual(res.status, 422);
+    assert.strictEqual(res.body.success, false);
+    assert.strictEqual(res.body.error.code, 'CORRUPTED_PDF');
+});

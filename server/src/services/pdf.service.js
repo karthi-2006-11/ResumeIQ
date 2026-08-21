@@ -17,15 +17,23 @@ function isValidPdfBuffer(buffer) {
  * @returns {Promise<{ text: string, numPages: number }>}
  */
 async function parsePdfBuffer(buffer) {
-    // 1. Signature Check
-    if (!isValidPdfBuffer(buffer)) {
-        const error = new Error('File signature check failed. The uploaded file is not a valid PDF document.');
-        error.code = 'INVALID_FILE';
+    // 1. Zero-Byte / Empty Check
+    if (!buffer || buffer.length === 0) {
+        const error = new Error('The uploaded file is empty (0 bytes). Please attach a valid PDF document.');
+        error.code = 'EMPTY_FILE';
         error.statusCode = 400;
         throw error;
     }
 
-    // 2. Parse PDF via pdf-parse passing typed array for buffer alignment
+    // 2. Signature Check (%PDF- / 0x25 0x50 0x44 0x46 0x2D)
+    if (!isValidPdfBuffer(buffer)) {
+        const error = new Error('File signature check failed. The uploaded file is not a valid PDF document.');
+        error.code = 'INVALID_PDF_SIGNATURE';
+        error.statusCode = 400;
+        throw error;
+    }
+
+    // 3. Parse PDF via pdf-parse passing typed array for buffer alignment
     try {
         const uint8Array = new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength);
         const data = await pdfParse(uint8Array);
@@ -37,8 +45,14 @@ async function parsePdfBuffer(buffer) {
         };
     } catch (err) {
         console.error('[PdfService] pdf-parse extraction error:', err.message);
-        const error = new Error('Unable to extract text from PDF document. The file may be corrupted or password protected.');
-        error.code = 'PDF_EXTRACTION_FAILED';
+        const isPasswordProtected = /password|encrypt/i.test(err.message || '') || err.name === 'PasswordException';
+
+        const error = new Error(
+            isPasswordProtected
+                ? 'The uploaded PDF is password protected or encrypted. Please upload an unprotected PDF document.'
+                : 'Unable to extract text from PDF document. The file structure is corrupted or invalid.'
+        );
+        error.code = isPasswordProtected ? 'PASSWORD_PROTECTED_PDF' : 'CORRUPTED_PDF';
         error.statusCode = 422;
         throw error;
     }
