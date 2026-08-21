@@ -1,4 +1,5 @@
 const { registerUser, loginUser, getUserById } = require('../services/auth.service');
+const { getUserUsage } = require('../services/usage.service');
 
 /**
  * Controller for POST /api/v1/auth/register
@@ -64,6 +65,23 @@ async function getCurrentUserHandler(req, res, next) {
 }
 
 /**
+ * Controller for GET /api/v1/auth/usage (Protected)
+ */
+async function getUserUsageHandler(req, res, next) {
+    try {
+        const userId = req.user ? req.user.id : null;
+        const usageData = await getUserUsage(userId);
+
+        return res.status(200).json({
+            success: true,
+            usage: usageData
+        });
+    } catch (err) {
+        next(err);
+    }
+}
+
+/**
  * Controller for POST /api/v1/auth/logout (Stateless)
  */
 function logoutHandler(req, res) {
@@ -77,5 +95,6 @@ module.exports = {
     registerHandler,
     loginHandler,
     getCurrentUserHandler,
+    getUserUsageHandler,
     logoutHandler
 };

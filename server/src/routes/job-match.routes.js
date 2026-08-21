@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { handlePdfUpload } = require('../middleware/upload.middleware');
 const { optionalAuth, requireAuth } = require('../middleware/auth.middleware');
+const { checkJobMatchQuota } = require('../middleware/quota.middleware');
 const {
     analyzeJobMatchHandler,
     getJobMatchesHistoryHandler,
@@ -10,7 +11,7 @@ const {
 } = require('../controllers/job-match.controller');
 
 // POST /api/v1/job-match (Supports both authenticated & anonymous uploads)
-router.post('/job-match', optionalAuth, handlePdfUpload, analyzeJobMatchHandler);
+router.post('/job-match', optionalAuth, checkJobMatchQuota, handlePdfUpload, analyzeJobMatchHandler);
 
 // GET /api/v1/job-matches (Protected — returns current user's history)
 router.get('/job-matches', requireAuth, getJobMatchesHistoryHandler);

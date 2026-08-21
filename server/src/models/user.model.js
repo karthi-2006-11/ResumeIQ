@@ -17,6 +17,28 @@ const UserSchema = new mongoose.Schema(
         passwordHash: {
             type: String,
             required: [true, 'Password hash is required']
+        },
+        tier: {
+            type: String,
+            enum: ['free', 'pro'],
+            default: 'free',
+            required: true
+        },
+        usage: {
+            analysisCount: {
+                type: Number,
+                default: 0,
+                min: 0
+            },
+            jobMatchCount: {
+                type: Number,
+                default: 0,
+                min: 0
+            },
+            lastResetDate: {
+                type: String,
+                default: () => new Date().toISOString().substring(0, 7) // 'YYYY-MM'
+            }
         }
     },
     {

@@ -355,6 +355,26 @@ const ResumeIQApiService = (() => {
         }
     }
 
+    /**
+     * Account Usage & Quota API (Authenticated)
+     */
+    async function getUserUsage() {
+        try {
+            const token = getToken();
+            if (!token) return { success: false };
+
+            const res = await fetch(`${CONFIG.baseUrl}/api/${CONFIG.apiVersion}/auth/usage`, {
+                method: 'GET',
+                headers: getAuthHeaders()
+            });
+            if (res.status === 401) setToken(null);
+            const data = await res.json();
+            return res.ok && data.success ? data : { success: false };
+        } catch (err) {
+            return { success: false };
+        }
+    }
+
     return {
         checkHealth,
         register,
@@ -370,6 +390,7 @@ const ResumeIQApiService = (() => {
         deleteAnalysis,
         getJobMatchesHistory,
         deleteJobMatch,
+        getUserUsage,
         CONFIG
     };
 })();

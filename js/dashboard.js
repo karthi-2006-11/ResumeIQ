@@ -17,10 +17,52 @@ document.addEventListener('DOMContentLoaded', async () => {
     const recentAnalysesList = document.getElementById('recentAnalysesList');
     const recentJobMatchesList = document.getElementById('recentJobMatchesList');
 
-    // 2. Load User Profile
+    // 2. Load User Profile & Usage
     const user = await ResumeIQAuth.getCurrentUser();
     if (user && emailSpan) {
         emailSpan.textContent = user.email;
+    }
+
+    // Load Account Usage & Quotas
+    try {
+        const usageRes = await ResumeIQApiService.getUserUsage();
+        if (usageRes && usageRes.success && usageRes.usage) {
+            const u = usageRes.usage;
+            const tierBadge = document.getElementById('usageTierBadge');
+            const resetText = document.getElementById('usageResetText');
+            const analysisText = document.getElementById('usageAnalysisText');
+            const analysisBar = document.getElementById('usageAnalysisBar');
+            const analysisSub = document.getElementById('usageAnalysisSub');
+            const jobMatchText = document.getElementById('usageJobMatchText');
+            const jobMatchBar = document.getElementById('usageJobMatchBar');
+            const jobMatchSub = document.getElementById('usageJobMatchSub');
+
+            if (tierBadge) tierBadge.textContent = `${(u.tier || 'free').toUpperCase()} PLAN`;
+            if (resetText && u.resetDate) {
+                const rDate = new Date(u.resetDate);
+                resetText.textContent = `Resets on ${rDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`;
+            }
+
+            if (u.analysis) {
+                const used = u.analysis.used || 0;
+                const limit = u.analysis.limit || 10;
+                const pct = Math.min(100, Math.round((used / limit) * 100));
+                if (analysisText) analysisText.textContent = `${used} / ${limit}`;
+                if (analysisBar) analysisBar.style.width = `${pct}%`;
+                if (analysisSub) analysisSub.textContent = `${u.analysis.remaining} remaining this month`;
+            }
+
+            if (u.jobMatch) {
+                const used = u.jobMatch.used || 0;
+                const limit = u.jobMatch.limit || 5;
+                const pct = Math.min(100, Math.round((used / limit) * 100));
+                if (jobMatchText) jobMatchText.textContent = `${used} / ${limit}`;
+                if (jobMatchBar) jobMatchBar.style.width = `${pct}%`;
+                if (jobMatchSub) jobMatchSub.textContent = `${u.jobMatch.remaining} remaining this month`;
+            }
+        }
+    } catch (uErr) {
+        console.warn('[Dashboard] Usage data could not be loaded:', uErr);
     }
 
     // 3. Fetch Analyses & Job Matches

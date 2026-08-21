@@ -85,10 +85,17 @@ async function registerUser({ email, password }) {
         }
 
         const mockId = new (require('mongoose').Types.ObjectId)().toString();
+        const currentPeriod = new Date().toISOString().substring(0, 7);
         const mockUser = {
             id: mockId,
             email: cleanEmail,
             passwordHash,
+            tier: 'free',
+            usage: {
+                analysisCount: 0,
+                jobMatchCount: 0,
+                lastResetDate: currentPeriod
+            },
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
         };
@@ -97,7 +104,14 @@ async function registerUser({ email, password }) {
         mockUserStore.set(mockId, mockUser);
         const token = generateToken(mockId);
 
-        const safeUser = { id: mockUser.id, email: mockUser.email, createdAt: mockUser.createdAt, updatedAt: mockUser.updatedAt };
+        const safeUser = {
+            id: mockUser.id,
+            email: mockUser.email,
+            tier: mockUser.tier || 'free',
+            usage: mockUser.usage || { analysisCount: 0, jobMatchCount: 0, lastResetDate: currentPeriod },
+            createdAt: mockUser.createdAt,
+            updatedAt: mockUser.updatedAt
+        };
         return { user: safeUser, token };
     }
 }
@@ -134,7 +148,7 @@ async function loginUser({ email, password }) {
                 id: mock.id,
                 email: mock.email,
                 passwordHash: mock.passwordHash,
-                json: { id: mock.id, email: mock.email, createdAt: mock.createdAt }
+                json: { id: mock.id, email: mock.email, tier: mock.tier, usage: mock.usage, createdAt: mock.createdAt }
             };
         }
     }
@@ -170,7 +184,7 @@ async function getUserById(userId) {
         return userDoc ? userDoc.toJSON() : null;
     } else {
         const mock = mockUserStore.get(userId);
-        return mock ? { id: mock.id, email: mock.email, createdAt: mock.createdAt } : null;
+        return mock ? { id: mock.id, email: mock.email, tier: mock.tier, usage: mock.usage, createdAt: mock.createdAt } : null;
     }
 }
 
@@ -200,5 +214,6 @@ module.exports = {
     getUserById,
     verifyToken,
     generateToken,
-    normalizeEmail
+    normalizeEmail,
+    mockUserStore
 };

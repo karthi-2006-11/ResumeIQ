@@ -6,6 +6,7 @@ const {
     registerHandler,
     loginHandler,
     getCurrentUserHandler,
+    getUserUsageHandler,
     logoutHandler
 } = require('../controllers/auth.controller');
 
@@ -17,6 +18,9 @@ router.post('/auth/login', authLimiter, loginHandler);
 
 // GET /api/v1/auth/me (Protected)
 router.get('/auth/me', requireAuth, getCurrentUserHandler);
+
+// GET /api/v1/auth/usage (Protected)
+router.get('/auth/usage', requireAuth, getUserUsageHandler);
 
 // POST /api/v1/auth/logout
 router.post('/auth/logout', logoutHandler);
