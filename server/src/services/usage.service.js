@@ -87,13 +87,12 @@ function formatUsagePayload(userDoc) {
  */
 function getPersistedUsage(userDoc) {
     if (!userDoc) return null;
-
-    const doc = userDoc._doc || userDoc;
-
-    if (doc && doc.usage && doc.usage.lastResetDate) {
-        return doc.usage;
+    if (!userDoc._doc) {
+        return userDoc.usage || null;
     }
-
+    if (typeof userDoc.isInit === 'function' && userDoc.isInit('usage.lastResetDate')) {
+        return userDoc.usage || null;
+    }
     return null;
 }
 
@@ -113,18 +112,18 @@ async function getUserUsage(userId) {
         return formatUsagePayload(mock);
     }
 
-    let user = await User.findById(userId);
-    if (!user) {
+    const leanUser = await User.findById(userId).lean();
+    if (!leanUser) {
         return formatUsagePayload({});
     }
 
     const currentPeriod = getCurrentUtcPeriod();
-    const rawUsage = getPersistedUsage(user);
+    const rawUsage = leanUser.usage || null;
     const isUninitializedOnDisk = !rawUsage || !rawUsage.lastResetDate;
     const isOutdatedPeriod = rawUsage && rawUsage.lastResetDate !== currentPeriod;
 
     if (isUninitializedOnDisk || isOutdatedPeriod) {
-        user = await User.findByIdAndUpdate(
+        const updatedUser = await User.findByIdAndUpdate(
             userId,
             {
                 $set: {
@@ -135,8 +134,10 @@ async function getUserUsage(userId) {
             },
             { new: true }
         );
+        return formatUsagePayload(updatedUser);
     }
 
+    const user = await User.findById(userId);
     return formatUsagePayload(user);
 }
 
@@ -180,20 +181,20 @@ async function reserveQuota(userId, quotaType = 'analysis') {
         };
     }
 
-    // 1. Ensure user usage record is initialized to current period on disk if uninitialized or outdated
-    let user = await User.findById(userId);
-    if (!user) return { success: true };
+    // 1. Fetch raw persisted user document without Mongoose schema defaults to check disk presence
+    const leanUser = await User.findById(userId).lean();
+    if (!leanUser) return { success: true };
 
-    const tier = user.tier || 'free';
+    const tier = leanUser.tier || 'free';
     const limits = getTierLimits(tier);
     const limit = quotaType === 'jobMatch' ? limits.jobMatchLimit : limits.analysisLimit;
 
-    const rawUsage = getPersistedUsage(user);
+    const rawUsage = leanUser.usage || null;
     const isUninitializedOnDisk = !rawUsage || !rawUsage.lastResetDate;
     const isOutdatedPeriod = rawUsage && rawUsage.lastResetDate !== currentPeriod;
 
     if (isUninitializedOnDisk || isOutdatedPeriod) {
-        user = await User.findByIdAndUpdate(
+        await User.findByIdAndUpdate(
             userId,
             {
                 $set: {

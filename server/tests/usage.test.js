@@ -331,10 +331,9 @@ test('Phase 23 — Account Usage Tracking & Tiered Quota Guard Suite', async (t)
         if (isConnected()) {
             await User.findByIdAndUpdate(userId, { $unset: { usage: "" } });
 
-            // Verify raw BSON document on disk lacks usage field (_doc.usage is undefined)
-            const checkUser = await User.findById(userId);
-            assert.strictEqual(checkUser._doc.usage, undefined, 'Raw stored BSON document must lack usage field');
-            assert.ok(checkUser.toObject().usage, 'Mongoose defaults still supply in-memory usage object');
+            // Verify raw lean document on disk lacks usage field entirely
+            const leanUser = await User.findById(userId).lean();
+            assert.strictEqual(leanUser.usage, undefined, 'Raw lean BSON document must lack usage field');
         } else {
             const mock = mockUserStore.get(userId);
             if (mock) delete mock.usage;
@@ -352,9 +351,9 @@ test('Phase 23 — Account Usage Tracking & Tiered Quota Guard Suite', async (t)
 
         // 3. Verify disk document now physically contains usage subdocument
         if (isConnected()) {
-            const finalUser = await User.findById(userId);
-            assert.ok(finalUser._doc.usage, 'Usage subdocument must now be physically stored on disk in BSON');
-            assert.strictEqual(finalUser._doc.usage.analysisCount, 1);
+            const finalLeanUser = await User.findById(userId).lean();
+            assert.ok(finalLeanUser.usage, 'Usage subdocument must now be physically stored on disk in BSON');
+            assert.strictEqual(finalLeanUser.usage.analysisCount, 1);
         }
     });
 
@@ -384,7 +383,7 @@ test('Phase 23 — Account Usage Tracking & Tiered Quota Guard Suite', async (t)
         assert.strictEqual(reservation.usage.jobMatch.used, 2);
     });
 
-    await t.test('11. Strict Persisted Usage Detection — Un-initialized BSON document lacks usage in _doc despite Mongoose schema defaults', async () => {
+    await t.test('11. Strict Persisted Usage Detection — Lean query accurately detects missing BSON usage subdocument', async () => {
         const email = `bson_detect_${Date.now()}@example.com`;
         const regRes = await jsonRequest(app, 'POST', '/api/v1/auth/register', {
             email,
@@ -394,13 +393,14 @@ test('Phase 23 — Account Usage Tracking & Tiered Quota Guard Suite', async (t)
 
         if (isConnected()) {
             await User.findByIdAndUpdate(userId, { $unset: { usage: "" } });
-            const doc = await User.findById(userId);
 
-            // Mongoose defaults exist in memory
-            assert.ok(doc.usage, 'In-memory usage exists via Mongoose defaults');
+            // Standard Mongoose Document populates defaults
+            const fullDoc = await User.findById(userId);
+            assert.ok(fullDoc.usage, 'Mongoose Document populates schema defaults in memory');
 
-            // BUT raw stored _doc.usage must be undefined
-            assert.strictEqual(doc._doc.usage, undefined, '_doc.usage must be undefined when missing on disk');
+            // BUT lean query reveals raw BSON truth
+            const leanDoc = await User.findById(userId).lean();
+            assert.strictEqual(leanDoc.usage, undefined, 'Lean BSON object accurately shows usage is missing on disk');
         }
     });
 
