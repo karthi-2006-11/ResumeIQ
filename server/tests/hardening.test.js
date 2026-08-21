@@ -72,3 +72,53 @@ test('Production Error Sanitization: 404 error returns structured JSON error for
     assert.strictEqual(res.body.error.code, 'NOT_FOUND');
     assert.ok(res.body.error.requestId);
 });
+
+function request(method, url, headers = {}) {
+    return new Promise((resolve, reject) => {
+        const server = app.listen(0, () => {
+            const port = server.address().port;
+            const http = require('http');
+
+            const req = http.request({
+                hostname: '127.0.0.1',
+                port: port,
+                path: url,
+                method: method,
+                headers: headers
+            }, (res) => {
+                let data = '';
+                res.on('data', chunk => data += chunk);
+                res.on('end', () => {
+                    server.close();
+                    try {
+                        const json = JSON.parse(data);
+                        resolve({ status: res.statusCode, headers: res.headers, body: json });
+                    } catch (e) {
+                        resolve({ status: res.statusCode, headers: res.headers, body: data });
+                    }
+                });
+            });
+
+            req.on('error', (err) => {
+                server.close();
+                reject(err);
+            });
+
+            req.end();
+        });
+    });
+}
+
+test('CORS Preflight & Origin Verification: Allows GitHub Pages origin and responds to OPTIONS', async () => {
+    const ghOrigin = 'https://karthi-2006-11.github.io';
+    const preflight = await request('OPTIONS', '/api/v1/auth/register', {
+        'Origin': ghOrigin,
+        'Access-Control-Request-Method': 'POST',
+        'Access-Control-Request-Headers': 'content-type, authorization, accept'
+    });
+
+    assert.ok(preflight.status === 200 || preflight.status === 204);
+    assert.strictEqual(preflight.headers['access-control-allow-origin'], ghOrigin);
+    assert.strictEqual(preflight.headers['access-control-allow-credentials'], 'true');
+    assert.ok(preflight.headers['access-control-allow-methods'].includes('POST'));
+});

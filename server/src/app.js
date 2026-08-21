@@ -38,20 +38,39 @@ app.use(
 );
 
 // 2. CORS Middleware Configuration
+function isAllowedOrigin(origin) {
+    if (!origin) return true;
+    const cleanOrigin = String(origin).trim().replace(/\/+$/, '');
+    const cleanClientOrigin = String(config.clientOrigin || '').trim().replace(/\/+$/, '').replace(/\/ResumeIQ$/i, '');
+
+    // 1. Match configured CLIENT_ORIGIN
+    if (cleanOrigin === cleanClientOrigin) return true;
+
+    // 2. Explicitly allow official deployed GitHub Pages origin
+    if (cleanOrigin === 'https://karthi-2006-11.github.io') return true;
+
+    // 3. Allow local development origins
+    if (cleanOrigin.startsWith('http://localhost') || cleanOrigin.startsWith('http://127.0.0.1')) return true;
+
+    return false;
+}
+
 const corsOptions = {
     origin: function (origin, callback) {
-        if (!origin || origin === config.clientOrigin || origin.startsWith('http://localhost') || origin.startsWith('http://127.0.0.1')) {
+        if (isAllowedOrigin(origin)) {
             callback(null, true);
         } else {
-            callback(new Error('CORS policy rejection: Origin not allowed.'));
+            callback(null, false);
         }
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-ID']
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-ID', 'Accept'],
+    optionsSuccessStatus: 200
 };
 
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 // 3. Request Tracking & Operational Logging
 app.use(requestIdMiddleware);
