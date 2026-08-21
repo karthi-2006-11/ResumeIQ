@@ -384,4 +384,24 @@ test('Phase 23 — Account Usage Tracking & Tiered Quota Guard Suite', async (t)
         assert.strictEqual(reservation.usage.jobMatch.used, 2);
     });
 
+    await t.test('11. Strict Persisted Usage Detection — Un-initialized BSON document lacks usage in _doc despite Mongoose schema defaults', async () => {
+        const email = `bson_detect_${Date.now()}@example.com`;
+        const regRes = await jsonRequest(app, 'POST', '/api/v1/auth/register', {
+            email,
+            password: 'Password123!'
+        });
+        const userId = regRes.body.user.id;
+
+        if (isConnected()) {
+            await User.findByIdAndUpdate(userId, { $unset: { usage: "" } });
+            const doc = await User.findById(userId);
+
+            // Mongoose defaults exist in memory
+            assert.ok(doc.usage, 'In-memory usage exists via Mongoose defaults');
+
+            // BUT raw stored _doc.usage must be undefined
+            assert.strictEqual(doc._doc.usage, undefined, '_doc.usage must be undefined when missing on disk');
+        }
+    });
+
 });

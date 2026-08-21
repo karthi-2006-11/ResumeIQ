@@ -87,12 +87,14 @@ function formatUsagePayload(userDoc) {
  */
 function getPersistedUsage(userDoc) {
     if (!userDoc) return null;
-    if (userDoc._doc && userDoc._doc.usage) return userDoc._doc.usage;
-    if (typeof userDoc.toObject === 'function') {
-        const plain = userDoc.toObject({ defaults: false });
-        if (plain && plain.usage) return plain.usage;
+
+    const doc = userDoc._doc || userDoc;
+
+    if (doc && doc.usage && doc.usage.lastResetDate) {
+        return doc.usage;
     }
-    return userDoc.usage || null;
+
+    return null;
 }
 
 /**
