@@ -318,4 +318,58 @@ test('Phase 23 — Account Usage Tracking & Tiered Quota Guard Suite', async (t)
         assert.strictEqual(guestRes.body.success, true);
     });
 
+    await t.test('9. Pre-Phase-23 User Initialization — Existing user with missing persisted usage initializes on disk and quota reservation succeeds', async () => {
+        const email = `prephase23_${Date.now()}@example.com`;
+        const regRes = await jsonRequest(app, 'POST', '/api/v1/auth/register', {
+            email,
+            password: 'Password123!'
+        });
+        const userId = regRes.body.user.id;
+        const token = regRes.body.token;
+
+        // Unset usage field on disk to simulate pre-Phase-23 existing user
+        if (isConnected()) {
+            await User.findByIdAndUpdate(userId, { $unset: { usage: "" } });
+        } else {
+            const mock = mockUserStore.get(userId);
+            if (mock) delete mock.usage;
+        }
+
+        // 1. Dashboard usage request must show 0 / 10
+        const usageRes = await jsonRequest(app, 'GET', '/api/v1/auth/usage', null, token);
+        assert.strictEqual(usageRes.status, 200);
+        assert.strictEqual(usageRes.body.usage.analysis.used, 0);
+
+        // 2. Reserve quota must succeed and return 1 slot reserved (not 429 QUOTA_EXCEEDED)
+        const reservation = await reserveQuota(userId, 'analysis');
+        assert.strictEqual(reservation.success, true, 'Quota reservation must succeed for pre-Phase-23 existing user after disk initialization');
+        assert.strictEqual(reservation.usage.analysis.used, 1, 'Analysis usage count must be 1 after reservation');
+    });
+
+    await t.test('10. Usage Preservation — Initialization logic does NOT reset valid existing usage within current month', async () => {
+        const email = `preserve_usage_${Date.now()}@example.com`;
+        const regRes = await jsonRequest(app, 'POST', '/api/v1/auth/register', {
+            email,
+            password: 'Password123!'
+        });
+        const userId = regRes.body.user.id;
+        const token = regRes.body.token;
+        const currentPeriod = getCurrentUtcPeriod();
+
+        // Set existing usage (4 analyses, 2 job matches)
+        await setUserUsageForTest(userId, 4, 2, currentPeriod);
+
+        // Fetch usage
+        const usageRes = await jsonRequest(app, 'GET', '/api/v1/auth/usage', null, token);
+        assert.strictEqual(usageRes.status, 200);
+        assert.strictEqual(usageRes.body.usage.analysis.used, 4);
+        assert.strictEqual(usageRes.body.usage.jobMatch.used, 2);
+
+        // Reserve quota
+        const reservation = await reserveQuota(userId, 'analysis');
+        assert.strictEqual(reservation.success, true);
+        assert.strictEqual(reservation.usage.analysis.used, 5);
+        assert.strictEqual(reservation.usage.jobMatch.used, 2);
+    });
+
 });

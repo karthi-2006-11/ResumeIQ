@@ -92,7 +92,7 @@ async function getUserUsage(userId) {
         const mock = mockUserStore.get(userId);
         if (!mock) return formatUsagePayload({});
         const currentPeriod = getCurrentUtcPeriod();
-        if (!mock.usage || mock.usage.lastResetDate !== currentPeriod) {
+        if (!mock.usage || !mock.usage.lastResetDate || mock.usage.lastResetDate !== currentPeriod) {
             mock.usage = { analysisCount: 0, jobMatchCount: 0, lastResetDate: currentPeriod };
         }
         return formatUsagePayload(mock);
@@ -104,13 +104,17 @@ async function getUserUsage(userId) {
     }
 
     const currentPeriod = getCurrentUtcPeriod();
-    if (!user.usage || user.usage.lastResetDate !== currentPeriod) {
+    const rawUsage = user.toObject ? user.toObject().usage : user.usage;
+    const isUninitializedOnDisk = !rawUsage || !rawUsage.lastResetDate;
+    const isOutdatedPeriod = rawUsage && rawUsage.lastResetDate !== currentPeriod;
+
+    if (isUninitializedOnDisk || isOutdatedPeriod) {
         user = await User.findByIdAndUpdate(
             userId,
             {
                 $set: {
-                    'usage.analysisCount': 0,
-                    'usage.jobMatchCount': 0,
+                    'usage.analysisCount': isUninitializedOnDisk ? 0 : (isOutdatedPeriod ? 0 : (user.usage?.analysisCount || 0)),
+                    'usage.jobMatchCount': isUninitializedOnDisk ? 0 : (isOutdatedPeriod ? 0 : (user.usage?.jobMatchCount || 0)),
                     'usage.lastResetDate': currentPeriod
                 }
             },
@@ -141,7 +145,7 @@ async function reserveQuota(userId, quotaType = 'analysis') {
         const limits = getTierLimits(tier);
         const limit = quotaType === 'jobMatch' ? limits.jobMatchLimit : limits.analysisLimit;
 
-        if (!mock.usage || mock.usage.lastResetDate !== currentPeriod) {
+        if (!mock.usage || !mock.usage.lastResetDate || mock.usage.lastResetDate !== currentPeriod) {
             mock.usage = { analysisCount: 0, jobMatchCount: 0, lastResetDate: currentPeriod };
         }
 
@@ -161,7 +165,7 @@ async function reserveQuota(userId, quotaType = 'analysis') {
         };
     }
 
-    // 1. Ensure user usage record is initialized to current period if outdated
+    // 1. Ensure user usage record is initialized to current period on disk if uninitialized or outdated
     let user = await User.findById(userId);
     if (!user) return { success: true };
 
@@ -169,15 +173,22 @@ async function reserveQuota(userId, quotaType = 'analysis') {
     const limits = getTierLimits(tier);
     const limit = quotaType === 'jobMatch' ? limits.jobMatchLimit : limits.analysisLimit;
 
-    // Reset if previous period
-    if (!user.usage || user.usage.lastResetDate !== currentPeriod) {
-        await User.findByIdAndUpdate(userId, {
-            $set: {
-                'usage.analysisCount': 0,
-                'usage.jobMatchCount': 0,
-                'usage.lastResetDate': currentPeriod
-            }
-        });
+    const rawUsage = user.toObject ? user.toObject().usage : user.usage;
+    const isUninitializedOnDisk = !rawUsage || !rawUsage.lastResetDate;
+    const isOutdatedPeriod = rawUsage && rawUsage.lastResetDate !== currentPeriod;
+
+    if (isUninitializedOnDisk || isOutdatedPeriod) {
+        user = await User.findByIdAndUpdate(
+            userId,
+            {
+                $set: {
+                    'usage.analysisCount': isUninitializedOnDisk ? 0 : (isOutdatedPeriod ? 0 : (user.usage?.analysisCount || 0)),
+                    'usage.jobMatchCount': isUninitializedOnDisk ? 0 : (isOutdatedPeriod ? 0 : (user.usage?.jobMatchCount || 0)),
+                    'usage.lastResetDate': currentPeriod
+                }
+            },
+            { new: true }
+        );
     }
 
     // 2. Atomic reservation query: increment count ONLY IF current count < limit
