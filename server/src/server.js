@@ -1,6 +1,6 @@
-const app = require('./src/app');
-const config = require('./src/config/env');
-const { connectDB, disconnectDB } = require('./src/config/database');
+const app = require('./app');
+const config = require('./config/env');
+const { connectDB, disconnectDB } = require('./config/database');
 
 async function startServer() {
     // 1. Connect to MongoDB (Non-blocking fallback if DB offline)
