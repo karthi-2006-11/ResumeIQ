@@ -259,7 +259,10 @@ const ResumeIQAuth = (() => {
         }
 
         const safeEmail = escapeHTML(user ? user.email : 'N/A');
-        const tierLabel = usage ? `${(usage.tier || 'free').toUpperCase()} PLAN` : 'FREE PLAN';
+        const userTier = usage ? (usage.tier || 'free').toLowerCase() : 'free';
+        const isProTier = userTier === 'pro';
+        const tierLabel = usage ? `${userTier.toUpperCase()} PLAN` : 'FREE PLAN';
+        const tierBadgeClass = isProTier ? 'badge badge-success' : 'badge badge-primary';
 
         let memberSince = 'N/A';
         if (user && user.createdAt) {
@@ -305,7 +308,10 @@ const ResumeIQAuth = (() => {
                     </div>
                     <div class="settings-row">
                         <span class="settings-label">Subscription Tier</span>
-                        <span class="settings-value"><span class="badge badge-primary">${tierLabel}</span></span>
+                        <span class="settings-value" style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span class="${tierBadgeClass}">${tierLabel}</span>
+                            ${isProTier ? '' : `<button type="button" class="btn btn-outline btn-sm" id="settingsUpgradeBtn" style="font-size: 0.75rem; padding: 0.15rem 0.5rem;"><i class="bi bi-star-fill" style="color: #f59e0b;" aria-hidden="true"></i> Upgrade</button>`}
+                        </span>
                     </div>
                     <div class="settings-row">
                         <span class="settings-label">Member Since</span>
@@ -339,6 +345,7 @@ const ResumeIQAuth = (() => {
         const closeBtn = document.getElementById('modalCloseBtn');
         const doneBtn = document.getElementById('modalDoneBtn');
         const logoutModalBtn = document.getElementById('modalLogoutBtn');
+        const settingsUpgradeBtn = document.getElementById('settingsUpgradeBtn');
 
         if (closeBtn) closeBtn.addEventListener('click', closeAccountSettingsModal);
         if (doneBtn) doneBtn.addEventListener('click', closeAccountSettingsModal);
@@ -347,6 +354,14 @@ const ResumeIQAuth = (() => {
                 e.preventDefault();
                 closeAccountSettingsModal();
                 logout();
+            });
+        }
+
+        if (settingsUpgradeBtn) {
+            settingsUpgradeBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                closeAccountSettingsModal();
+                openProUpgradeModal();
             });
         }
 
@@ -372,6 +387,91 @@ const ResumeIQAuth = (() => {
     }
 
     /**
+     * Open Pro Plan Upgrade Information Modal (Phase 25B)
+     */
+    function openProUpgradeModal() {
+        let modal = document.getElementById('proUpgradeModal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'proUpgradeModal';
+            modal.className = 'modal-overlay';
+            modal.setAttribute('role', 'dialog');
+            modal.setAttribute('aria-labelledby', 'proModalTitle');
+            modal.setAttribute('aria-modal', 'true');
+            document.body.appendChild(modal);
+        }
+
+        modal.innerHTML = `
+            <div class="settings-modal-card">
+                <div class="settings-modal-header" style="background: linear-gradient(135deg, rgba(37,99,235,0.06), rgba(139,92,246,0.06)); border-bottom: 1px solid var(--border-color);">
+                    <h2 class="settings-modal-title" id="proModalTitle" style="color: var(--primary);">
+                        <i class="bi bi-star-fill" style="color: #f59e0b;" aria-hidden="true"></i> ResumeIQ Pro Plan
+                    </h2>
+                    <button type="button" class="settings-modal-close" id="proModalCloseBtn" aria-label="Close modal">
+                        <i class="bi bi-x-lg" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="settings-modal-body">
+                    <div style="text-align: center; margin-bottom: 1.25rem;">
+                        <span class="badge badge-warning" style="font-size: 0.825rem; padding: 0.35rem 0.75rem;">
+                            <i class="bi bi-info-circle-fill" aria-hidden="true"></i> Self-Service Payments Coming Soon
+                        </span>
+                    </div>
+
+                    <p style="font-size: 0.95rem; color: var(--text-main); line-height: 1.5; margin-bottom: 1.25rem; text-align: center;">
+                        Upgrade to <strong>ResumeIQ Pro</strong> to unlock expanded monthly limits, priority AI processing, and advanced optimization tools.
+                    </p>
+
+                    <div class="settings-section-title">Pro Plan Benefits</div>
+                    <ul style="list-style: none; padding: 0; margin: 0 0 1.25rem 0; line-height: 2;">
+                        <li style="display: flex; align-items: center; gap: 0.65rem; font-size: 0.9rem;">
+                            <i class="bi bi-check-circle-fill" style="color: var(--success);" aria-hidden="true"></i>
+                            <span><strong>100 Resume Analyses / month</strong> (vs 10 on Free)</span>
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 0.65rem; font-size: 0.9rem;">
+                            <i class="bi bi-check-circle-fill" style="color: var(--success);" aria-hidden="true"></i>
+                            <span><strong>50 Job Description Matches / month</strong> (vs 5 on Free)</span>
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 0.65rem; font-size: 0.9rem;">
+                            <i class="bi bi-clock-history" style="color: var(--primary);" aria-hidden="true"></i>
+                            <span><strong>Priority AI Insights & Qualitative Feedback</strong> <em style="font-size: 0.785rem; color: var(--text-muted);">(Planned Pro Feature)</em></span>
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 0.65rem; font-size: 0.9rem;">
+                            <i class="bi bi-clock-history" style="color: var(--primary);" aria-hidden="true"></i>
+                            <span><strong>Extended Analysis History Retention</strong> <em style="font-size: 0.785rem; color: var(--text-muted);">(Planned Pro Feature)</em></span>
+                        </li>
+                    </ul>
+
+                    <div style="font-size: 0.8rem; color: var(--text-muted); background: #f8fafc; padding: 0.75rem 1rem; border-radius: var(--radius-sm); border: 1px solid #e2e8f0;">
+                        <i class="bi bi-shield-lock" aria-hidden="true"></i> Live payment gateway integration (Stripe) will be available in an upcoming release. Enterprise testing accounts can be upgraded by system administrators.
+                    </div>
+                </div>
+                <div class="settings-modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" id="proModalGotItBtn">Got It</button>
+                </div>
+            </div>
+        `;
+
+        const closeBtn = document.getElementById('proModalCloseBtn');
+        const gotItBtn = document.getElementById('proModalGotItBtn');
+
+        function closeProModal() {
+            modal.classList.remove('is-visible');
+            document.body.style.overflow = '';
+        }
+
+        if (closeBtn) closeBtn.addEventListener('click', closeProModal);
+        if (gotItBtn) gotItBtn.addEventListener('click', closeProModal);
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeProModal();
+        });
+
+        modal.classList.add('is-visible');
+        document.body.style.overflow = 'hidden';
+    }
+
+    /**
      * Close Account Settings Modal
      */
     function closeAccountSettingsModal() {
@@ -392,6 +492,15 @@ const ResumeIQAuth = (() => {
     if (typeof window !== 'undefined') {
         document.addEventListener('DOMContentLoaded', () => {
             updateHeaderNav();
+
+            // Handle Dashboard Upgrade to Pro button if present
+            const dashUpgradeBtn = document.getElementById('upgradeProBtn');
+            if (dashUpgradeBtn) {
+                dashUpgradeBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    openProUpgradeModal();
+                });
+            }
         });
     }
 
@@ -404,7 +513,8 @@ const ResumeIQAuth = (() => {
         getCurrentUser,
         logout,
         requireAuthOrRedirect,
-        updateHeaderNav
+        updateHeaderNav,
+        openProUpgradeModal
     };
 })();
 

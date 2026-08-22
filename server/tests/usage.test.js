@@ -404,4 +404,62 @@ test('Phase 23 — Account Usage Tracking & Tiered Quota Guard Suite', async (t)
         }
     });
 
+    await t.test('12. Pro Tier Usage Limits — Pro user receives expanded limits (100 analyses, 50 job matches)', async () => {
+        const email = `pro_user_${Date.now()}@example.com`;
+        const regRes = await jsonRequest(app, 'POST', '/api/v1/auth/register', {
+            email,
+            password: 'Password123!'
+        });
+        const userId = regRes.body.user.id;
+        const token = regRes.body.token;
+
+        // Set user tier to 'pro'
+        if (isConnected()) {
+            await User.findByIdAndUpdate(userId, { $set: { tier: 'pro' } });
+        } else {
+            const mock = mockUserStore.get(userId);
+            if (mock) mock.tier = 'pro';
+        }
+
+        const usageRes = await jsonRequest(app, 'GET', '/api/v1/auth/usage', null, token);
+        assert.strictEqual(usageRes.status, 200);
+        assert.strictEqual(usageRes.body.usage.tier, 'pro');
+        assert.strictEqual(usageRes.body.usage.analysis.limit, 100, 'Pro tier analysis limit must be 100');
+        assert.strictEqual(usageRes.body.usage.jobMatch.limit, 50, 'Pro tier job match limit must be 50');
+    });
+
+    await t.test('13. Pro Tier Quota Reservation — Pro user can reserve past Free tier limit of 10 analyses', async () => {
+        const email = `pro_reserve_${Date.now()}@example.com`;
+        const regRes = await jsonRequest(app, 'POST', '/api/v1/auth/register', {
+            email,
+            password: 'Password123!'
+        });
+        const userId = regRes.body.user.id;
+
+        // Set user tier to 'pro' and set 10 analyses used
+        const currentPeriod = getCurrentUtcPeriod();
+        if (isConnected()) {
+            await User.findByIdAndUpdate(userId, {
+                $set: {
+                    tier: 'pro',
+                    'usage.analysisCount': 10,
+                    'usage.lastResetDate': currentPeriod
+                }
+            });
+        } else {
+            const mock = mockUserStore.get(userId);
+            if (mock) {
+                mock.tier = 'pro';
+                mock.usage = { analysisCount: 10, jobMatchCount: 0, lastResetDate: currentPeriod };
+            }
+        }
+
+        // 11th reservation (which would fail on Free plan) must succeed on Pro plan
+        const reservation = await reserveQuota(userId, 'analysis');
+        assert.strictEqual(reservation.success, true, '11th analysis reservation must succeed for Pro tier user');
+        assert.strictEqual(reservation.usage.tier, 'pro');
+        assert.strictEqual(reservation.usage.analysis.used, 11);
+        assert.strictEqual(reservation.usage.analysis.limit, 100);
+    });
+
 });
