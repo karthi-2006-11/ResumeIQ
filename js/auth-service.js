@@ -187,12 +187,6 @@ const ResumeIQAuth = (() => {
 
             authActionBox.innerHTML = `
                 <div class="user-pill-dropdown">
-                    <span class="badge badge-primary header-tier-badge" id="headerTierBadge" style="display: none;">FREE PLAN</span>
-                    <div class="header-quota-widget" id="headerQuotaWidget" style="display: none;">
-                        <span title="Resume Analyses used / limit"><i class="bi bi-file-earmark-bar-graph" aria-hidden="true"></i> <strong id="headerAnalysisUsage">--/--</strong></span>
-                        <span class="quota-divider" aria-hidden="true">|</span>
-                        <span title="Job Matches used / limit"><i class="bi bi-crosshair" aria-hidden="true"></i> <strong id="headerJobMatchUsage">--/--</strong></span>
-                    </div>
                     <a href="dashboard.html" class="btn btn-outline btn-sm" title="Logged in as ${safeEmail}">
                         <i class="bi bi-person-circle" aria-hidden="true"></i>
                         <span class="user-email-text">${safeEmail}</span>
@@ -222,31 +216,9 @@ const ResumeIQAuth = (() => {
                 });
             }
 
-            // Asynchronously populate header tier badge and remaining quota counters
+            // Asynchronously pre-fetch user usage to prime cache for settings modal & quota guards
             if (window.ResumeIQApiService) {
-                window.ResumeIQApiService.getUserUsage().then(usageRes => {
-                    if (usageRes && usageRes.success && usageRes.usage) {
-                        const u = usageRes.usage;
-                        const tierBadge = document.getElementById('headerTierBadge');
-                        const quotaWidget = document.getElementById('headerQuotaWidget');
-                        const analysisSpan = document.getElementById('headerAnalysisUsage');
-                        const matchSpan = document.getElementById('headerJobMatchUsage');
-
-                        if (tierBadge) {
-                            tierBadge.textContent = `${(u.tier || 'free').toUpperCase()} PLAN`;
-                            tierBadge.style.display = 'inline-block';
-                        }
-                        if (analysisSpan && u.analysis) {
-                            analysisSpan.textContent = `${u.analysis.used}/${u.analysis.limit}`;
-                        }
-                        if (matchSpan && u.jobMatch) {
-                            matchSpan.textContent = `${u.jobMatch.used}/${u.jobMatch.limit}`;
-                        }
-                        if (quotaWidget) {
-                            quotaWidget.style.display = 'inline-flex';
-                        }
-                    }
-                }).catch(err => {
+                window.ResumeIQApiService.getUserUsage().catch(err => {
                     console.warn('[HeaderNav] Usage load skipped:', err);
                 });
             }

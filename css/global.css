@@ -278,6 +278,12 @@ ul, ol {
     margin-left: 0.5rem;
 }
 
+.nav-menu > .auth-nav-links:first-child {
+    border-left: none;
+    padding-left: 0;
+    margin-left: 0;
+}
+
 .nav-actions {
     display: flex;
     align-items: center;
