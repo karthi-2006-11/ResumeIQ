@@ -82,6 +82,66 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Fetch and cache user account usage metrics on load
+    let cachedUsage = null;
+    if (typeof window !== 'undefined' && window.ResumeIQApiService) {
+        window.ResumeIQApiService.getUserUsage().then(res => {
+            if (res && res.success && res.usage) {
+                cachedUsage = res.usage;
+                if (selectedFile) {
+                    checkQuotaLimits();
+                }
+            }
+        }).catch(err => {
+            console.warn('[Upload] Failed to load usage metrics:', err);
+        });
+    }
+
+    function formatResetDateStr(isoStr) {
+        if (!isoStr) return '';
+        try {
+            const d = new Date(isoStr);
+            return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+        } catch (e) {
+            return isoStr;
+        }
+    }
+
+    function checkQuotaLimits() {
+        if (!cachedUsage) return false;
+
+        const tier = (cachedUsage.tier || 'free').toUpperCase();
+        const resetStr = formatResetDateStr(cachedUsage.resetDate);
+        const hasJd = jobDescriptionInput && jobDescriptionInput.value.trim().length >= 20;
+
+        // 1. Check Analysis Quota
+        if (cachedUsage.analysis && cachedUsage.analysis.used >= cachedUsage.analysis.limit) {
+            showError(`Monthly resume analysis quota of ${cachedUsage.analysis.limit} reached for your ${tier} plan. Limits reset on ${resetStr || 'the 1st of next month'}.`);
+            if (analyzeBtn) analyzeBtn.disabled = true;
+            return true; // Quota exceeded
+        }
+
+        // 2. Check Job Match Quota (if Job Description provided)
+        if (hasJd && cachedUsage.jobMatch && cachedUsage.jobMatch.used >= cachedUsage.jobMatch.limit) {
+            showError(`Monthly job match quota of ${cachedUsage.jobMatch.limit} reached for your ${tier} plan. Limits reset on ${resetStr || 'the 1st of next month'}.`);
+            if (analyzeBtn) analyzeBtn.disabled = true;
+            return true; // Quota exceeded
+        }
+
+        hideError();
+        if (analyzeBtn && selectedFile) analyzeBtn.disabled = false;
+        return false;
+    }
+
+    // Monitor Job Description Input for Real-Time Quota Pre-Check
+    if (jobDescriptionInput) {
+        jobDescriptionInput.addEventListener('input', () => {
+            if (selectedFile) {
+                checkQuotaLimits();
+            }
+        });
+    }
+
     // Process selected file with validation
     function handleFileSelection(file) {
         hideError();
@@ -111,7 +171,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         selectedFile = file;
         renderFilePreview(file);
-        if (analyzeBtn) analyzeBtn.disabled = false;
+
+        if (!checkQuotaLimits() && analyzeBtn) {
+            analyzeBtn.disabled = false;
+        }
     }
 
     // Render Preview Component
@@ -207,6 +270,10 @@ document.addEventListener('DOMContentLoaded', () => {
         analyzeBtn.addEventListener('click', async () => {
             if (!selectedFile) return;
 
+            if (checkQuotaLimits()) {
+                return;
+            }
+
             // UI Loading Feedback on Button
             analyzeBtn.disabled = true;
             analyzeBtn.innerHTML = '<i class="bi bi-hourglass-split spin" aria-hidden="true"></i> Parsing & Analyzing PDF...';
@@ -214,28 +281,37 @@ document.addEventListener('DOMContentLoaded', () => {
             const targetRole = jobRoleSelect ? jobRoleSelect.value : 'Software Engineer';
             const jobDescription = jobDescriptionInput ? jobDescriptionInput.value.trim() : '';
 
-            // Extract PDF Text
-            const extractedText = await extractTextFromPDF(selectedFile);
+            try {
+                // Extract PDF Text
+                const extractedText = await extractTextFromPDF(selectedFile);
 
-            // Execute Master Analysis Service Layer (with optional Job Description)
-            let result = null;
-            if (window.ResumeIQAnalysisService) {
-                result = await window.ResumeIQAnalysisService.analyze(selectedFile, extractedText, {
-                    targetRole: targetRole,
-                    jobDescription: jobDescription,
-                    mode: 'auto'
-                });
+                // Execute Master Analysis Service Layer (with optional Job Description)
+                let result = null;
+                if (window.ResumeIQAnalysisService) {
+                    result = await window.ResumeIQAnalysisService.analyze(selectedFile, extractedText, {
+                        targetRole: targetRole,
+                        jobDescription: jobDescription,
+                        mode: 'auto'
+                    });
+                }
+
+                if (result && result.success === false) {
+                    showError(result.error || 'The uploaded file was rejected. Please select a valid PDF resume.');
+                    return;
+                }
+
+                // Redirect to loading animation page
+                window.location.href = 'loading.html';
+            } catch (err) {
+                console.error('[Upload] Analysis invocation exception:', err);
+                showError(`An unexpected error occurred: ${err.message || 'Analysis failed.'}. Please try again.`);
+            } finally {
+                // Reset button state if redirection didn't happen (i.e. error or rejection)
+                if (analyzeBtn && window.location.pathname.indexOf('loading.html') === -1) {
+                    analyzeBtn.disabled = false;
+                    analyzeBtn.innerHTML = '<i class="bi bi-cpu-fill" aria-hidden="true"></i> Analyze Resume';
+                }
             }
-
-            if (result && result.success === false) {
-                showError(result.error || 'The uploaded file was rejected. Please select a valid PDF resume.');
-                analyzeBtn.disabled = false;
-                analyzeBtn.innerHTML = '<i class="bi bi-cpu-fill" aria-hidden="true"></i> Analyze Resume';
-                return;
-            }
-
-            // Redirect to loading animation page
-            window.location.href = 'loading.html';
         });
     }
 });

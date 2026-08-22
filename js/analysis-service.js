@@ -87,12 +87,13 @@ const ResumeIQAnalysisService = (() => {
                                 resultPayload.jobMatch = apiResponse.jobMatch;
                             }
                         } else if (apiResponse.success === false) {
-                            // Backend responded but rejected the upload (e.g. invalid signature, empty file, corrupted).
+                            // Backend responded but rejected the upload (e.g. invalid signature, empty file, corrupted, QUOTA_EXCEEDED).
                             // Do NOT fall back to local analyzer for server-rejected files.
                             return {
                                 success: false,
                                 error: apiResponse.error || 'The uploaded resume was rejected by the server.',
-                                code: apiResponse.code || 'UPLOAD_REJECTED'
+                                code: apiResponse.code || 'UPLOAD_REJECTED',
+                                quota: apiResponse.quota || null
                             };
                         }
                     } catch (err) {

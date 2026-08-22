@@ -223,7 +223,8 @@ const ResumeIQApiService = (() => {
                 return {
                     success: false,
                     error: data.error?.message || 'Server analysis endpoint unavailable. Fallback active.',
-                    code: data.error?.code || null
+                    code: data.error?.code || null,
+                    quota: data.error?.quota || null
                 };
             }
         } catch (err) {
