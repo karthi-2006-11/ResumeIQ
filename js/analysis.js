@@ -724,15 +724,156 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Guest Conversion CTA Banner Toggle (Phase 25A)
+    const guestBanner = document.getElementById('guestConversionBanner');
+    if (guestBanner) {
+        const isAuth = typeof ResumeIQAuth !== 'undefined' && typeof ResumeIQAuth.isAuthenticated === 'function'
+            ? ResumeIQAuth.isAuthenticated()
+            : false;
+        guestBanner.style.display = !isAuth ? 'flex' : 'none';
+    }
+
     if (uploadAgainBtn) {
         uploadAgainBtn.addEventListener('click', () => {
             window.location.href = 'upload.html';
         });
     }
 
+    // Print / Export PDF Handler (Phase 25A)
     if (printReportBtn) {
         printReportBtn.addEventListener('click', () => {
+            const printableContainer = document.getElementById('printableOptimizedResume');
+            if (printableContainer && (!printableContainer.innerHTML || printableContainer.innerHTML.trim() === '')) {
+                const scores = activeAnalysis?.scores || {};
+                printableContainer.innerHTML = `
+                    <div style="font-family: system-ui, sans-serif; padding: 1rem; color: #0f172a;">
+                        <h1 style="font-size: 1.75rem; color: #2563eb; margin-bottom: 0.5rem;">ResumeIQ Analysis Report</h1>
+                        <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1.5rem;">
+                            File: <strong>${escapeHTML(activeAnalysis?.fileName || 'Resume.pdf')}</strong> |
+                            Target Role: <strong>${escapeHTML(activeAnalysis?.targetRole || 'Software Engineer')}</strong> |
+                            Date: <strong>${new Date().toLocaleDateString()}</strong>
+                        </p>
+                        <hr style="border: 0; border-top: 1px solid #e2e8f0; margin-bottom: 1.5rem;">
+
+                        <h2 style="font-size: 1.25rem;">ATS Overview</h2>
+                        <ul style="line-height: 1.8;">
+                            <li><strong>ATS Overall Score:</strong> ${scores.atsScore || 0}%</li>
+                            <li><strong>Resume Quality:</strong> ${scores.qualityScore || 0}%</li>
+                            <li><strong>Skills Match:</strong> ${scores.skillsMatchPct || 0}%</li>
+                            <li><strong>Formatting Audit:</strong> ${scores.formattingScore || 0}%</li>
+                        </ul>
+
+                        <h2 style="font-size: 1.25rem; margin-top: 1.5rem;">Skills Audit</h2>
+                        <p><strong>Found:</strong> ${escapeHTML((activeAnalysis?.skillsFound || []).join(', ') || 'None')}</p>
+                        <p><strong>Missing Priority:</strong> ${escapeHTML((activeAnalysis?.skillsMissing || []).join(', ') || 'None')}</p>
+
+                        <h2 style="font-size: 1.25rem; margin-top: 1.5rem;">Executive Summary</h2>
+                        <p style="line-height: 1.6;">${escapeHTML(activeAnalysis?.summary || 'Resume analysis completed.')}</p>
+                    </div>
+                `;
+            }
             window.print();
+        });
+    }
+
+    // Download Markdown Report Handler (Phase 25A)
+    const downloadMdBtn = document.getElementById('downloadMdBtn');
+    if (downloadMdBtn) {
+        downloadMdBtn.addEventListener('click', () => {
+            if (!activeAnalysis) return;
+
+            const scores = activeAnalysis.scores || {};
+            const fileName = activeAnalysis.fileName || 'Resume.pdf';
+            const targetRole = activeAnalysis.targetRole || 'Software Engineer';
+            const dateStr = activeAnalysis.metadata?.analyzedAt
+                ? new Date(activeAnalysis.metadata.analyzedAt).toLocaleDateString()
+                : new Date().toLocaleDateString();
+
+            const skillsFound = (activeAnalysis.skillsFound || []).join(', ') || 'None detected';
+            const skillsMissing = (activeAnalysis.skillsMissing || []).join(', ') || 'None detected';
+            const summaryText = activeAnalysis.summary || 'Resume analysis completed.';
+
+            let mdContent = `# ResumeIQ Analysis Report\n\n`;
+            mdContent += `**File Name:** ${fileName}\n`;
+            mdContent += `**Target Role:** ${targetRole}\n`;
+            mdContent += `**Date:** ${dateStr}\n\n`;
+
+            mdContent += `## Scores Summary\n\n`;
+            mdContent += `- **ATS Overall Score:** ${scores.atsScore || 0}%\n`;
+            mdContent += `- **Resume Quality Score:** ${scores.qualityScore || 0}%\n`;
+            mdContent += `- **Skills Match Score:** ${scores.skillsMatchPct || 0}%\n`;
+            mdContent += `- **Formatting Audit Score:** ${scores.formattingScore || 0}%\n\n`;
+
+            mdContent += `## Skills Audit\n\n`;
+            mdContent += `### Verified Skills Found\n${skillsFound}\n\n`;
+            mdContent += `### Missing Priority Skills\n${skillsMissing}\n\n`;
+
+            if (activeAnalysis.jobMatch) {
+                const jm = activeAnalysis.jobMatch;
+                mdContent += `## Job Match Results\n\n`;
+                mdContent += `- **Match Score:** ${jm.matchScore || 0}%\n`;
+                mdContent += `- **Matching Skills:** ${(jm.matchingSkills || []).join(', ') || 'None'}\n`;
+                mdContent += `- **Missing Required Skills:** ${(jm.missingRequiredSkills || []).join(', ') || 'None'}\n\n`;
+            }
+
+            mdContent += `## Executive Summary\n\n${summaryText}\n\n`;
+            mdContent += `---\n*Report generated by ResumeIQ*`;
+
+            try {
+                const blob = new Blob([mdContent], { type: 'text/markdown;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `Resume_Analysis_Report_${fileName.replace(/[^a-zA-Z0-9]/g, '_')}.md`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+            } catch (err) {
+                console.error('[Export] Download Markdown exception:', err);
+                alert('Could not download Markdown report. Please copy the summary instead.');
+            }
+        });
+    }
+
+    // Copy Executive Summary Handler (Phase 25A)
+    const copySummaryBtn = document.getElementById('copySummaryBtn');
+    if (copySummaryBtn) {
+        copySummaryBtn.addEventListener('click', async () => {
+            if (!activeAnalysis) return;
+
+            const scores = activeAnalysis.scores || {};
+            const fileName = activeAnalysis.fileName || 'Resume.pdf';
+            const targetRole = activeAnalysis.targetRole || 'Software Engineer';
+            const summaryText = activeAnalysis.summary || 'Analysis completed.';
+
+            const plainSummary = `ResumeIQ Report for ${fileName} (${targetRole})\n` +
+                `ATS Score: ${scores.atsScore || 0}% | Quality: ${scores.qualityScore || 0}%\n` +
+                `Skills Found: ${(activeAnalysis.skillsFound || []).join(', ')}\n` +
+                `Missing Skills: ${(activeAnalysis.skillsMissing || []).join(', ')}\n` +
+                `Summary: ${summaryText}`;
+
+            try {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(plainSummary);
+                } else {
+                    const textarea = document.createElement('textarea');
+                    textarea.value = plainSummary;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                }
+
+                const origHtml = copySummaryBtn.innerHTML;
+                copySummaryBtn.innerHTML = '<i class="bi bi-check2" style="color: var(--success);" aria-hidden="true"></i> Copied!';
+                setTimeout(() => {
+                    copySummaryBtn.innerHTML = origHtml;
+                }, 2000);
+            } catch (err) {
+                console.error('[Export] Copy summary exception:', err);
+                alert('Could not copy to clipboard. Text preview:\n\n' + plainSummary);
+            }
         });
     }
 });

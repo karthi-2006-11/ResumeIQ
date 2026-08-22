@@ -333,6 +333,63 @@
     }
 }
 
+/* Guest Conversion CTA Banner (Phase 25A) */
+.guest-conversion-banner {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(99, 102, 241, 0.08));
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    border-radius: var(--radius-md);
+    padding: 1.15rem 1.35rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.05);
+}
+
+.guest-conversion-banner .banner-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+    min-width: 260px;
+}
+
+.guest-conversion-banner .banner-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
+}
+
+.guest-conversion-banner .banner-title {
+    font-weight: 700;
+    font-size: 0.975rem;
+    color: var(--slate-900);
+    margin-bottom: 0.2rem;
+}
+
+.guest-conversion-banner .banner-sub {
+    font-size: 0.85rem;
+    color: var(--slate-600);
+    line-height: 1.4;
+}
+
+.guest-conversion-banner .banner-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex-shrink: 0;
+}
+
 /* Responsive */
 @media (max-width: 992px) {
     .dashboard-grid {

@@ -77,6 +77,12 @@
                         <button type="button" class="btn btn-outline btn-sm" id="generateAiBtn" aria-label="Generate AI Insights">
                             <i class="bi bi-stars" style="color: var(--primary);" aria-hidden="true"></i> Generate AI Insights
                         </button>
+                        <button type="button" class="btn btn-outline btn-sm" id="downloadMdBtn" title="Download report summary as Markdown">
+                            <i class="bi bi-file-earmark-arrow-down" style="color: var(--primary);" aria-hidden="true"></i> Download .md
+                        </button>
+                        <button type="button" class="btn btn-outline btn-sm" id="copySummaryBtn" title="Copy executive summary to clipboard">
+                            <i class="bi bi-clipboard-check" aria-hidden="true"></i> Copy Summary
+                        </button>
                         <button type="button" class="btn btn-outline btn-sm" id="printReportBtn" aria-label="Print or export analysis report to PDF">
                             <i class="bi bi-printer" aria-hidden="true"></i> Export / Print
                         </button>
@@ -89,6 +95,27 @@
                 <!-- Privacy & Opt-In Notice for AI -->
                 <div style="font-size: 0.785rem; color: var(--slate-500); background: #f1f5f9; padding: 0.5rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
                     <span><i class="bi bi-shield-check" style="color: var(--primary);"></i> <strong>Privacy Notice:</strong> AI processing is optional. Clicking "Generate AI Insights" sends non-sensitive resume metrics to the server AI provider for qualitative feedback.</span>
+                </div>
+
+                <!-- Guest Conversion CTA Banner (Phase 25A) -->
+                <div class="guest-conversion-banner" id="guestConversionBanner" style="display: none;">
+                    <div class="banner-content">
+                        <div class="banner-icon" aria-hidden="true">
+                            <i class="bi bi-person-plus-fill"></i>
+                        </div>
+                        <div class="banner-text">
+                            <div class="banner-title">Save This Analysis & Track Improvements</div>
+                            <div class="banner-sub">Create a free ResumeIQ account to automatically save report history, track ATS score improvements over time, and unlock 10 free monthly analyses.</div>
+                        </div>
+                    </div>
+                    <div class="banner-actions">
+                        <a href="register.html" class="btn btn-primary btn-sm">
+                            <i class="bi bi-person-plus" aria-hidden="true"></i> Create Free Account
+                        </a>
+                        <a href="login.html" class="btn btn-outline btn-sm">
+                            <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> Login
+                        </a>
+                    </div>
                 </div>
 
                 <!-- Job Description Match Container -->
