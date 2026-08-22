@@ -37,7 +37,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             const jobMatchBar = document.getElementById('usageJobMatchBar');
             const jobMatchSub = document.getElementById('usageJobMatchSub');
 
-            if (tierBadge) tierBadge.textContent = `${(u.tier || 'free').toUpperCase()} PLAN`;
+            const isPro = (u.tier || 'free').toLowerCase() === 'pro';
+            if (tierBadge) {
+                tierBadge.textContent = `${(u.tier || 'free').toUpperCase()} PLAN`;
+                tierBadge.className = isPro ? 'badge badge-success' : 'badge badge-primary';
+            }
+            const dashUpgradeBtn = document.getElementById('upgradeProBtn');
+            if (dashUpgradeBtn) {
+                dashUpgradeBtn.style.display = isPro ? 'none' : 'inline-flex';
+            }
             if (resetText && u.resetDate) {
                 const rDate = new Date(u.resetDate);
                 resetText.textContent = `Resets on ${rDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`;

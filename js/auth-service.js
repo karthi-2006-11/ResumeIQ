@@ -308,9 +308,9 @@ const ResumeIQAuth = (() => {
                     </div>
                     <div class="settings-row">
                         <span class="settings-label">Subscription Tier</span>
-                        <span class="settings-value" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span class="settings-value" style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
                             <span class="${tierBadgeClass}">${tierLabel}</span>
-                            ${isProTier ? '' : `<button type="button" class="btn btn-outline btn-sm" id="settingsUpgradeBtn" style="font-size: 0.75rem; padding: 0.15rem 0.5rem;"><i class="bi bi-star-fill" style="color: #f59e0b;" aria-hidden="true"></i> Upgrade</button>`}
+                            ${isProTier ? '' : `<button type="button" class="btn btn-outline btn-sm btn-upgrade-pro" id="settingsUpgradeBtn" style="font-size: 0.785rem; padding: 0.2rem 0.6rem;"><i class="bi bi-star-fill" style="color: #f59e0b;" aria-hidden="true"></i> Upgrade to Pro</button>`}
                         </span>
                     </div>
                     <div class="settings-row">
@@ -488,18 +488,19 @@ const ResumeIQAuth = (() => {
             tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
     }
 
-    // Initialize Header on DOMContentLoaded
+    // Initialize Header & Global Upgrade Listeners
     if (typeof window !== 'undefined') {
         document.addEventListener('DOMContentLoaded', () => {
             updateHeaderNav();
+        });
 
-            // Handle Dashboard Upgrade to Pro button if present
-            const dashUpgradeBtn = document.getElementById('upgradeProBtn');
-            if (dashUpgradeBtn) {
-                dashUpgradeBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    openProUpgradeModal();
-                });
+        // Global Event Delegation for Upgrade to Pro Buttons
+        document.addEventListener('click', (e) => {
+            const btn = e.target.closest('#upgradeProBtn, #settingsUpgradeBtn, .btn-upgrade-pro');
+            if (btn) {
+                e.preventDefault();
+                closeAccountSettingsModal();
+                openProUpgradeModal();
             }
         });
     }
