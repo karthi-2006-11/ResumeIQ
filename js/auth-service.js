@@ -197,6 +197,9 @@ const ResumeIQAuth = (() => {
                         <i class="bi bi-person-circle" aria-hidden="true"></i>
                         <span class="user-email-text">${safeEmail}</span>
                     </a>
+                    <button type="button" class="btn btn-outline btn-sm" id="headerSettingsBtn" title="Account Settings">
+                        <i class="bi bi-gear-fill" aria-hidden="true"></i> Settings
+                    </button>
                     <button type="button" class="btn btn-secondary btn-sm" id="headerLogoutBtn" title="Log out of ResumeIQ">
                         <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Logout
                     </button>
@@ -208,6 +211,14 @@ const ResumeIQAuth = (() => {
                 logoutBtn.addEventListener('click', (e) => {
                     e.preventDefault();
                     logout();
+                });
+            }
+
+            const settingsBtn = document.getElementById('headerSettingsBtn');
+            if (settingsBtn) {
+                settingsBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    openAccountSettingsModal();
                 });
             }
 
@@ -245,6 +256,158 @@ const ResumeIQAuth = (() => {
                 <a href="register.html" class="btn btn-primary btn-sm">Create Account</a>
             `;
         }
+    }
+
+    /**
+     * Open Account Settings Modal (Phase 24C)
+     */
+    async function openAccountSettingsModal() {
+        let modal = document.getElementById('accountSettingsModal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'accountSettingsModal';
+            modal.className = 'modal-overlay';
+            modal.setAttribute('role', 'dialog');
+            modal.setAttribute('aria-labelledby', 'modalTitle');
+            modal.setAttribute('aria-modal', 'true');
+            document.body.appendChild(modal);
+        }
+
+        let user = getCachedUser();
+        if (!user && window.ResumeIQApiService) {
+            user = await getCurrentUser();
+        }
+
+        let usage = null;
+        if (window.ResumeIQApiService) {
+            const usageRes = await window.ResumeIQApiService.getUserUsage();
+            if (usageRes && usageRes.success) {
+                usage = usageRes.usage;
+            }
+        }
+
+        const safeEmail = escapeHTML(user ? user.email : 'N/A');
+        const tierLabel = usage ? `${(usage.tier || 'free').toUpperCase()} PLAN` : 'FREE PLAN';
+
+        let memberSince = 'N/A';
+        if (user && user.createdAt) {
+            try {
+                memberSince = new Date(user.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+            } catch (e) {
+                memberSince = 'N/A';
+            }
+        }
+
+        let resetDateStr = 'the 1st of next month';
+        if (usage && usage.resetDate) {
+            try {
+                resetDateStr = new Date(usage.resetDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+            } catch (e) {
+                resetDateStr = usage.resetDate;
+            }
+        }
+
+        const analysisUsed = usage && usage.analysis ? usage.analysis.used : 0;
+        const analysisLimit = usage && usage.analysis ? usage.analysis.limit : 10;
+        const analysisRemaining = usage && usage.analysis ? usage.analysis.remaining : (analysisLimit - analysisUsed);
+
+        const matchUsed = usage && usage.jobMatch ? usage.jobMatch.used : 0;
+        const matchLimit = usage && usage.jobMatch ? usage.jobMatch.limit : 5;
+        const matchRemaining = usage && usage.jobMatch ? usage.jobMatch.remaining : (matchLimit - matchUsed);
+
+        modal.innerHTML = `
+            <div class="settings-modal-card">
+                <div class="settings-modal-header">
+                    <h2 class="settings-modal-title" id="modalTitle">
+                        <i class="bi bi-gear-fill" style="color: var(--primary);" aria-hidden="true"></i> Account Settings
+                    </h2>
+                    <button type="button" class="settings-modal-close" id="modalCloseBtn" aria-label="Close settings">
+                        <i class="bi bi-x-lg" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="settings-modal-body">
+                    <div class="settings-section-title">Account Profile</div>
+                    <div class="settings-row">
+                        <span class="settings-label">Email Address</span>
+                        <span class="settings-value">${safeEmail}</span>
+                    </div>
+                    <div class="settings-row">
+                        <span class="settings-label">Subscription Tier</span>
+                        <span class="settings-value"><span class="badge badge-primary">${tierLabel}</span></span>
+                    </div>
+                    <div class="settings-row">
+                        <span class="settings-label">Member Since</span>
+                        <span class="settings-value">${memberSince}</span>
+                    </div>
+
+                    <div class="settings-section-title" style="margin-top: 1.25rem;">Monthly Usage & Quotas</div>
+                    <div class="settings-row">
+                        <span class="settings-label">Resume Analyses</span>
+                        <span class="settings-value">${analysisUsed} / ${analysisLimit} used (${analysisRemaining} remaining)</span>
+                    </div>
+                    <div class="settings-row">
+                        <span class="settings-label">Job Matches</span>
+                        <span class="settings-value">${matchUsed} / ${matchLimit} used (${matchRemaining} remaining)</span>
+                    </div>
+                    <div class="settings-row">
+                        <span class="settings-label">Quota Reset Date</span>
+                        <span class="settings-value">${resetDateStr}</span>
+                    </div>
+                </div>
+                <div class="settings-modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" id="modalLogoutBtn">
+                        <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Logout
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm" id="modalDoneBtn">Done</button>
+                </div>
+            </div>
+        `;
+
+        // Event Handlers for Closing Modal
+        const closeBtn = document.getElementById('modalCloseBtn');
+        const doneBtn = document.getElementById('modalDoneBtn');
+        const logoutModalBtn = document.getElementById('modalLogoutBtn');
+
+        if (closeBtn) closeBtn.addEventListener('click', closeAccountSettingsModal);
+        if (doneBtn) doneBtn.addEventListener('click', closeAccountSettingsModal);
+        if (logoutModalBtn) {
+            logoutModalBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                closeAccountSettingsModal();
+                logout();
+            });
+        }
+
+        // Close on Backdrop Click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeAccountSettingsModal();
+            }
+        });
+
+        // Close on Escape key press
+        const keyHandler = (e) => {
+            if (e.key === 'Escape') {
+                closeAccountSettingsModal();
+                document.removeEventListener('keydown', keyHandler);
+            }
+        };
+        document.addEventListener('keydown', keyHandler);
+
+        // Show Modal & Prevent Body Scroll
+        modal.classList.add('is-visible');
+        document.body.style.overflow = 'hidden';
+    }
+
+    /**
+     * Close Account Settings Modal
+     */
+    function closeAccountSettingsModal() {
+        const modal = document.getElementById('accountSettingsModal');
+        if (modal) {
+            modal.classList.remove('is-visible');
+        }
+        document.body.style.overflow = '';
     }
 
     function escapeHTML(str) {
