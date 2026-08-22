@@ -183,11 +183,19 @@ const ResumeIQAuth = (() => {
 
         if (isAuth) {
             const userEmail = user ? user.email : 'My Account';
+            const safeEmail = escapeHTML(userEmail);
+
             authActionBox.innerHTML = `
                 <div class="user-pill-dropdown">
-                    <a href="dashboard.html" class="btn btn-outline btn-sm" title="Logged in as ${userEmail}">
+                    <span class="badge badge-primary header-tier-badge" id="headerTierBadge" style="display: none;">FREE PLAN</span>
+                    <div class="header-quota-widget" id="headerQuotaWidget" style="display: none;">
+                        <span title="Resume Analyses used / limit"><i class="bi bi-file-earmark-bar-graph" aria-hidden="true"></i> <strong id="headerAnalysisUsage">--/--</strong></span>
+                        <span class="quota-divider" aria-hidden="true">|</span>
+                        <span title="Job Matches used / limit"><i class="bi bi-crosshair" aria-hidden="true"></i> <strong id="headerJobMatchUsage">--/--</strong></span>
+                    </div>
+                    <a href="dashboard.html" class="btn btn-outline btn-sm" title="Logged in as ${safeEmail}">
                         <i class="bi bi-person-circle" aria-hidden="true"></i>
-                        <span class="user-email-text">${userEmail}</span>
+                        <span class="user-email-text">${safeEmail}</span>
                     </a>
                     <button type="button" class="btn btn-secondary btn-sm" id="headerLogoutBtn" title="Log out of ResumeIQ">
                         <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Logout
@@ -202,12 +210,47 @@ const ResumeIQAuth = (() => {
                     logout();
                 });
             }
+
+            // Asynchronously populate header tier badge and remaining quota counters
+            if (window.ResumeIQApiService) {
+                window.ResumeIQApiService.getUserUsage().then(usageRes => {
+                    if (usageRes && usageRes.success && usageRes.usage) {
+                        const u = usageRes.usage;
+                        const tierBadge = document.getElementById('headerTierBadge');
+                        const quotaWidget = document.getElementById('headerQuotaWidget');
+                        const analysisSpan = document.getElementById('headerAnalysisUsage');
+                        const matchSpan = document.getElementById('headerJobMatchUsage');
+
+                        if (tierBadge) {
+                            tierBadge.textContent = `${(u.tier || 'free').toUpperCase()} PLAN`;
+                            tierBadge.style.display = 'inline-block';
+                        }
+                        if (analysisSpan && u.analysis) {
+                            analysisSpan.textContent = `${u.analysis.used}/${u.analysis.limit}`;
+                        }
+                        if (matchSpan && u.jobMatch) {
+                            matchSpan.textContent = `${u.jobMatch.used}/${u.jobMatch.limit}`;
+                        }
+                        if (quotaWidget) {
+                            quotaWidget.style.display = 'inline-flex';
+                        }
+                    }
+                }).catch(err => {
+                    console.warn('[HeaderNav] Usage load skipped:', err);
+                });
+            }
         } else {
             authActionBox.innerHTML = `
                 <a href="login.html" class="btn btn-outline btn-sm">Login</a>
                 <a href="register.html" class="btn btn-primary btn-sm">Create Account</a>
             `;
         }
+    }
+
+    function escapeHTML(str) {
+        if (!str) return '';
+        return String(str).replace(/[&<>'"]/g,
+            tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
     }
 
     // Initialize Header on DOMContentLoaded

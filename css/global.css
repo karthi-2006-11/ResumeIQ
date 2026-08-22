@@ -291,6 +291,44 @@ ul, ol {
     gap: 0.5rem;
 }
 
+.header-tier-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    text-transform: uppercase;
+}
+
+.header-quota-widget {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    color: var(--slate-600);
+    background-color: var(--slate-100);
+    border: 1px solid var(--slate-200);
+    padding: 0.25rem 0.6rem;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+}
+
+.header-quota-widget .quota-divider {
+    color: var(--slate-300);
+    margin: 0 0.1rem;
+}
+
+.header-quota-widget strong {
+    color: var(--slate-800);
+    font-weight: 600;
+}
+
+@media (max-width: 576px) {
+    .header-quota-widget {
+        display: none !important;
+    }
+}
+
 .user-email-text {
     max-width: 130px;
     overflow: hidden;

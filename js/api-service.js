@@ -356,24 +356,41 @@ const ResumeIQApiService = (() => {
         }
     }
 
+    let inFlightUsagePromise = null;
+
     /**
      * Account Usage & Quota API (Authenticated)
+     * Incorporates in-flight request deduplication for single-page performance.
      */
-    async function getUserUsage() {
-        try {
-            const token = getToken();
-            if (!token) return { success: false };
-
-            const res = await fetch(`${CONFIG.baseUrl}/api/${CONFIG.apiVersion}/auth/usage`, {
-                method: 'GET',
-                headers: getAuthHeaders()
-            });
-            if (res.status === 401) setToken(null);
-            const data = await res.json();
-            return res.ok && data.success ? data : { success: false };
-        } catch (err) {
-            return { success: false };
+    async function getUserUsage(forceRefresh = false) {
+        if (inFlightUsagePromise && !forceRefresh) {
+            return inFlightUsagePromise;
         }
+
+        inFlightUsagePromise = (async () => {
+            try {
+                const token = getToken();
+                if (!token) return { success: false };
+
+                const res = await fetch(`${CONFIG.baseUrl}/api/${CONFIG.apiVersion}/auth/usage`, {
+                    method: 'GET',
+                    headers: getAuthHeaders()
+                });
+                if (res.status === 401) setToken(null);
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    return data;
+                } else {
+                    return { success: false };
+                }
+            } catch (err) {
+                return { success: false };
+            } finally {
+                inFlightUsagePromise = null;
+            }
+        })();
+
+        return inFlightUsagePromise;
     }
 
     return {
